@@ -1,0 +1,77 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+._*
+.Spotlight-V100
+.Trashes
+
+# Xcode
+build/
+DerivedData/
+*.xcuserstate
+*.xcuserdatad/
+xcuserdata/
+*.xccheckout
+*.moved-aside
+*.pbxuser
+!default.pbxuser
+*.perspectivev3
+!default.perspectivev3
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# Generated Xcode project (XcodeGen is source of truth)
+*.xcodeproj
+!Packages/**/*.xcodeproj
+
+# Swift Package Manager
+.build/
+.swiftpm/
+Package.resolved
+Packages/*/Package.resolved
+
+# CocoaPods / Carthage (not used, but ignore just in case)
+Pods/
+Carthage/Build/
+
+# Fastlane
+fastlane/report.xml
+fastlane/screenshots/
+fastlane/test_output/
+
+# Tuist
+Derived/
+
+# Bundler
+.bundle/
+vendor/
+
+# Secrets / local config
+*.xcconfig.local
+.env
+.env.*
+!.env.example
+
+# Downloaded models (user-specific, large)
+Models/
+*.mlmodelc
+*.onnx
+*.bin
+
+# Logs
+*.log
+
+# IDE
+.vscode/
+.idea/
+*.iml
+
+# Coverage
+*.gcno
+*.gcda
+*.profraw
+*.profdata
