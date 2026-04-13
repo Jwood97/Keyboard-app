@@ -4,9 +4,9 @@ public struct DSSegmentedControl<Value: Hashable>: View {
   public struct Option: Identifiable {
     public let id: Value
     public let title: String
-    public let icon: String?
+    public let icon: DSIcon?
 
-    public init(id: Value, title: String, icon: String? = nil) {
+    public init(id: Value, title: String, icon: DSIcon? = nil) {
       self.id = id
       self.title = title
       self.icon = icon
@@ -33,8 +33,12 @@ public struct DSSegmentedControl<Value: Hashable>: View {
         } label: {
           HStack(spacing: DSSpacing.xxs) {
             if let icon = option.icon {
-              Image(systemName: icon)
-                .font(.system(size: 13, weight: .semibold))
+              DSIconView(
+                icon,
+                weight: .regular,
+                size: 14,
+                tint: self.selection == option.id ? DSColor.Text.primary : DSColor.Text.secondary
+              )
             }
             DSText(
               option.title,

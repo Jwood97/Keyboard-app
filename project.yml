@@ -10,6 +10,7 @@ options:
   tabWidth: 2
   usesTabs: false
   xcodeVersion: "15.0"
+  preGenCommand: swift Scripts/generate-icons.swift
 
 configs:
   Debug: debug

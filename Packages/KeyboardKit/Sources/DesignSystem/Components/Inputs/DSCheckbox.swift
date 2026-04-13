@@ -28,9 +28,7 @@ public struct DSCheckbox: View {
             )
             .frame(width: 22, height: 22)
           if self.isChecked {
-            Image(systemName: "checkmark")
-              .font(.system(size: 12, weight: .bold))
-              .foregroundStyle(DSColor.Text.onAccent)
+            DSIconView(DSIcon.UI.check, weight: .fill, size: 14, tint: DSColor.Text.onAccent)
           }
         }
         if let title = self.title {

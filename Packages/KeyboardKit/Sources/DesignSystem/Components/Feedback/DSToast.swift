@@ -54,9 +54,7 @@ public struct DSToastView: View {
 
   public var body: some View {
     HStack(spacing: DSSpacing.sm) {
-      Image(systemName: self.iconName)
-        .font(.system(size: 18, weight: .semibold))
-        .foregroundStyle(self.tint)
+      DSIconView(self.icon, weight: .fill, size: 20, tint: self.tint)
       VStack(alignment: .leading, spacing: 2) {
         DSText(self.toast.title, style: .bodyStrong, color: DSColor.Text.onInverse)
         if let message = self.toast.message {
@@ -73,16 +71,16 @@ public struct DSToastView: View {
     .dsShadow(DSElevation.lg)
   }
 
-  private var iconName: String {
+  private var icon: DSIcon {
     switch self.toast.kind {
       case .info:
-        return "info.circle.fill"
+        return DSIcon.Status.info
       case .success:
-        return "checkmark.seal.fill"
+        return DSIcon.Status.success
       case .warning:
-        return "exclamationmark.triangle.fill"
+        return DSIcon.Status.warning
       case .error:
-        return "xmark.octagon.fill"
+        return DSIcon.Status.error
     }
   }
 

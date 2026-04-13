@@ -3,14 +3,14 @@ import SwiftUI
 public struct DSToggle: View {
   private let title: String
   private let subtitle: String?
-  private let icon: String?
+  private let icon: DSIcon?
   @Binding private var isOn: Bool
 
   public init(
     _ title: String,
     isOn: Binding<Bool>,
     subtitle: String? = nil,
-    icon: String? = nil
+    icon: DSIcon? = nil
   ) {
     self.title = title
     self._isOn = isOn
@@ -21,9 +21,7 @@ public struct DSToggle: View {
   public var body: some View {
     HStack(spacing: DSSpacing.sm) {
       if let icon = self.icon {
-        Image(systemName: icon)
-          .font(.system(size: 18, weight: .semibold))
-          .foregroundStyle(DSColor.Accent.primary)
+        DSIconView(icon, weight: .regular, size: 18, tint: DSColor.Accent.primary)
           .frame(width: 32, height: 32)
           .background(
             RoundedRectangle(cornerRadius: DSRadius.sm, style: .continuous)

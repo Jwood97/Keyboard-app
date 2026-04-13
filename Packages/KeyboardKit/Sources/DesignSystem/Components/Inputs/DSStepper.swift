@@ -25,11 +25,11 @@ public struct DSStepper: View {
         Spacer(minLength: DSSpacing.sm)
       }
       HStack(spacing: 0) {
-        self.button(icon: "minus", action: self.decrement)
+        self.button(icon: DSIcon.UI.minus, action: self.decrement)
           .disabled(self.value <= self.range.lowerBound)
         DSText("\(self.value)", style: .bodyStrong)
           .frame(width: 40)
-        self.button(icon: "plus", action: self.increment)
+        self.button(icon: DSIcon.UI.plus, action: self.increment)
           .disabled(self.value >= self.range.upperBound)
       }
       .frame(height: 36)
@@ -40,14 +40,12 @@ public struct DSStepper: View {
     }
   }
 
-  private func button(icon: String, action: @escaping () -> Void) -> some View {
+  private func button(icon: DSIcon, action: @escaping () -> Void) -> some View {
     Button {
       DSHaptics.impact(.light)
       action()
     } label: {
-      Image(systemName: icon)
-        .font(.system(size: 14, weight: .bold))
-        .foregroundStyle(DSColor.Accent.primary)
+      DSIconView(icon, weight: .regular, size: 16, tint: DSColor.Accent.primary)
         .frame(width: 40, height: 36)
     }
     .buttonStyle(.plain)

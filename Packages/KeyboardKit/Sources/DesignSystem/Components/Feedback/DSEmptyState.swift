@@ -3,14 +3,14 @@ import SwiftUI
 public struct DSEmptyState: View {
   private let title: String
   private let message: String?
-  private let icon: String
+  private let icon: DSIcon
   private let primaryAction: (label: String, handler: () -> Void)?
   private let secondaryAction: (label: String, handler: () -> Void)?
 
   public init(
     title: String,
     message: String? = nil,
-    icon: String = "leaf.fill",
+    icon: DSIcon = .leaf,
     primaryAction: (label: String, handler: () -> Void)? = nil,
     secondaryAction: (label: String, handler: () -> Void)? = nil
   ) {
@@ -27,9 +27,7 @@ public struct DSEmptyState: View {
         Circle()
           .fill(DSColor.Accent.primarySoft)
           .frame(width: 88, height: 88)
-        Image(systemName: self.icon)
-          .font(.system(size: 34, weight: .semibold))
-          .foregroundStyle(DSColor.Accent.primary)
+        DSIconView(self.icon, weight: .fill, size: 40, tint: DSColor.Accent.primary)
       }
       VStack(spacing: DSSpacing.xs) {
         DSText(self.title, style: .title, alignment: .center)

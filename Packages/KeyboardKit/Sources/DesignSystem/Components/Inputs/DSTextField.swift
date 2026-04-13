@@ -10,8 +10,8 @@ public enum DSFieldState: Sendable, Equatable {
 public struct DSTextField: View {
   private let title: String?
   private let placeholder: String
-  private let leadingIcon: String?
-  private let trailingIcon: String?
+  private let leadingIcon: DSIcon?
+  private let trailingIcon: DSIcon?
   private let helperText: String?
   private let state: DSFieldState
   private let isSecure: Bool
@@ -27,8 +27,8 @@ public struct DSTextField: View {
     _ placeholder: String,
     text: Binding<String>,
     title: String? = nil,
-    leadingIcon: String? = nil,
-    trailingIcon: String? = nil,
+    leadingIcon: DSIcon? = nil,
+    trailingIcon: DSIcon? = nil,
     helperText: String? = nil,
     state: DSFieldState = .idle,
     isSecure: Bool = false,
@@ -58,28 +58,25 @@ public struct DSTextField: View {
       }
       HStack(spacing: DSSpacing.xs) {
         if let leading = self.leadingIcon {
-          Image(systemName: leading)
-            .foregroundStyle(DSColor.Text.tertiary)
-            .font(.system(size: 16, weight: .medium))
+          DSIconView(leading, weight: .regular, size: 18, tint: DSColor.Text.tertiary)
         }
         self.field
         if self.isSecure {
           Button {
             self.isRevealed.toggle()
           } label: {
-            Image(systemName: self.isRevealed ? "eye.slash" : "eye")
-              .foregroundStyle(DSColor.Text.tertiary)
-              .font(.system(size: 16, weight: .medium))
+            DSIconView(
+              self.isRevealed ? DSIcon.UI.eyeSlash : DSIcon.UI.eye,
+              weight: .regular,
+              size: 18,
+              tint: DSColor.Text.tertiary
+            )
           }
           .buttonStyle(.plain)
         } else if let trailing = self.trailingIcon {
-          Image(systemName: trailing)
-            .foregroundStyle(self.accentForState)
-            .font(.system(size: 16, weight: .medium))
-        } else if self.state != .idle {
-          Image(systemName: self.stateIcon)
-            .foregroundStyle(self.accentForState)
-            .font(.system(size: 16, weight: .medium))
+          DSIconView(trailing, weight: .regular, size: 18, tint: self.accentForState)
+        } else if let stateIcon = self.stateIcon {
+          DSIconView(stateIcon, weight: .fill, size: 18, tint: self.accentForState)
         }
       }
       .padding(.horizontal, DSSpacing.md)
@@ -164,16 +161,16 @@ public struct DSTextField: View {
     }
   }
 
-  private var stateIcon: String {
+  private var stateIcon: DSIcon? {
     switch self.state {
       case .idle:
-        return ""
+        return nil
       case .success:
-        return "checkmark.circle.fill"
+        return DSIcon.Status.success
       case .warning:
-        return "exclamationmark.triangle.fill"
+        return DSIcon.Status.warning
       case .error:
-        return "xmark.octagon.fill"
+        return DSIcon.Status.error
     }
   }
 }

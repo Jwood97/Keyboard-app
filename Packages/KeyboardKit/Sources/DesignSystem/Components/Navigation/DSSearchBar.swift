@@ -18,9 +18,7 @@ public struct DSSearchBar: View {
 
   public var body: some View {
     HStack(spacing: DSSpacing.xs) {
-      Image(systemName: "magnifyingglass")
-        .foregroundStyle(DSColor.Text.tertiary)
-        .font(.system(size: 16, weight: .medium))
+      DSIconView(DSIcon.UI.search, weight: .regular, size: 18, tint: DSColor.Text.tertiary)
       TextField(self.placeholder, text: self.$query)
         .focused(self.$isFocused)
         .font(DSTypography.body)
@@ -31,9 +29,7 @@ public struct DSSearchBar: View {
         Button {
           self.query = ""
         } label: {
-          Image(systemName: "xmark.circle.fill")
-            .foregroundStyle(DSColor.Text.tertiary)
-            .font(.system(size: 16))
+          DSIconView(DSIcon.UI.dismiss, weight: .fill, size: 18, tint: DSColor.Text.tertiary)
         }
         .buttonStyle(.plain)
       }

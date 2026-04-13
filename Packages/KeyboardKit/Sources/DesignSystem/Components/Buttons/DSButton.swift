@@ -60,8 +60,9 @@ public enum DSButtonSize: Sendable {
 
 public struct DSButton: View {
   private let title: String
-  private let icon: String?
-  private let trailingIcon: String?
+  private let icon: DSIcon?
+  private let trailingIcon: DSIcon?
+  private let iconWeight: DSIconWeight
   private let variant: DSButtonVariant
   private let size: DSButtonSize
   private let fullWidth: Bool
@@ -71,8 +72,9 @@ public struct DSButton: View {
 
   public init(
     _ title: String,
-    icon: String? = nil,
-    trailingIcon: String? = nil,
+    icon: DSIcon? = nil,
+    trailingIcon: DSIcon? = nil,
+    iconWeight: DSIconWeight = .regular,
     variant: DSButtonVariant = .primary,
     size: DSButtonSize = .medium,
     fullWidth: Bool = false,
@@ -82,6 +84,7 @@ public struct DSButton: View {
     self.title = title
     self.icon = icon
     self.trailingIcon = trailingIcon
+    self.iconWeight = iconWeight
     self.variant = variant
     self.size = size
     self.fullWidth = fullWidth
@@ -93,8 +96,7 @@ public struct DSButton: View {
     Button(action: self.handleTap) {
       HStack(spacing: DSSpacing.xs) {
         if let icon = self.icon, !self.isLoading {
-          Image(systemName: icon)
-            .font(.system(size: self.size.iconSize, weight: .semibold))
+          DSIconView(icon, weight: self.iconWeight, size: self.size.iconSize + 2, tint: self.foreground)
         }
         if self.isLoading {
           ProgressView()
@@ -105,8 +107,7 @@ public struct DSButton: View {
           DSText(self.title, style: self.size.textStyle, color: self.foreground)
         }
         if let trailing = self.trailingIcon, !self.isLoading {
-          Image(systemName: trailing)
-            .font(.system(size: self.size.iconSize, weight: .semibold))
+          DSIconView(trailing, weight: self.iconWeight, size: self.size.iconSize + 2, tint: self.foreground)
         }
       }
       .foregroundStyle(self.foreground)

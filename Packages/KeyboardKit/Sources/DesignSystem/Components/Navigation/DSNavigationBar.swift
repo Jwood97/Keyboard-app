@@ -63,6 +63,6 @@ public struct DSBackButton: View {
   }
 
   public var body: some View {
-    DSIconButton(icon: "chevron.left", style: .ghost, size: .medium, tint: DSColor.Text.primary, action: self.action)
+    DSIconButton(icon: DSIcon.UI.chevronLeft, style: .ghost, size: .medium, tint: DSColor.Text.primary, action: self.action)
   }
 }

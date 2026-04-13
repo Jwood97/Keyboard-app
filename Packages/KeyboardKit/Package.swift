@@ -19,7 +19,12 @@ let package = Package(
   ],
   targets: [
     .target(name: "AppCore", path: "Sources/AppCore"),
-    .target(name: "DesignSystem", dependencies: ["AppCore"], path: "Sources/DesignSystem"),
+    .target(
+      name: "DesignSystem",
+      dependencies: ["AppCore"],
+      path: "Sources/DesignSystem",
+      resources: [.process("Resources/Icons.xcassets")]
+    ),
     .target(name: "Persistence", dependencies: ["AppCore"], path: "Sources/Persistence"),
     .target(name: "ModelCatalog", dependencies: ["AppCore", "Persistence"], path: "Sources/ModelCatalog"),
     .target(name: "SpeechRecognition", dependencies: ["AppCore", "ModelCatalog"], path: "Sources/SpeechRecognition"),

@@ -30,20 +30,23 @@ public struct DSText: View {
 
 public struct DSLabel: View {
   private let title: String
-  private let icon: String
+  private let icon: DSIcon
+  private let iconWeight: DSIconWeight
   private let style: DSTextStyle
   private let color: Color
   private let spacing: CGFloat
 
   public init(
     _ title: String,
-    icon: String,
+    icon: DSIcon,
+    iconWeight: DSIconWeight = .regular,
     style: DSTextStyle = .callout,
     color: Color = DSColor.Text.primary,
     spacing: CGFloat = DSSpacing.xs
   ) {
     self.title = title
     self.icon = icon
+    self.iconWeight = iconWeight
     self.style = style
     self.color = color
     self.spacing = spacing
@@ -51,9 +54,7 @@ public struct DSLabel: View {
 
   public var body: some View {
     HStack(spacing: self.spacing) {
-      Image(systemName: self.icon)
-        .font(self.style.font)
-        .foregroundStyle(self.color)
+      DSIconView(self.icon, weight: self.iconWeight, size: 16, tint: self.color)
       DSText(self.title, style: self.style, color: self.color)
     }
   }

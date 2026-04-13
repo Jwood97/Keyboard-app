@@ -3,15 +3,13 @@ import SwiftUI
 public struct DSTabBarItem<Value: Hashable>: Identifiable {
   public let id: Value
   public let title: String
-  public let icon: String
-  public let selectedIcon: String?
+  public let icon: DSIcon
   public let badge: String?
 
-  public init(id: Value, title: String, icon: String, selectedIcon: String? = nil, badge: String? = nil) {
+  public init(id: Value, title: String, icon: DSIcon, badge: String? = nil) {
     self.id = id
     self.title = title
     self.icon = icon
-    self.selectedIcon = selectedIcon
     self.badge = badge
   }
 }
@@ -36,10 +34,13 @@ public struct DSTabBar<Value: Hashable>: View {
         } label: {
           VStack(spacing: 4) {
             ZStack(alignment: .topTrailing) {
-              Image(systemName: self.iconName(for: item))
-                .font(.system(size: 22, weight: .semibold))
-                .foregroundStyle(self.isSelected(item) ? DSColor.Accent.primary : DSColor.Text.tertiary)
-                .padding(8)
+              DSIconView(
+                item.icon,
+                weight: self.isSelected(item) ? .fill : .regular,
+                size: 24,
+                tint: self.isSelected(item) ? DSColor.Accent.primary : DSColor.Text.tertiary
+              )
+              .padding(8)
               if let badge = item.badge {
                 DSBadge(badge, style: .danger, filled: true)
                   .offset(x: 6, y: -4)
@@ -73,9 +74,5 @@ public struct DSTabBar<Value: Hashable>: View {
 
   private func isSelected(_ item: DSTabBarItem<Value>) -> Bool {
     self.selection == item.id
-  }
-
-  private func iconName(for item: DSTabBarItem<Value>) -> String {
-    self.isSelected(item) ? (item.selectedIcon ?? item.icon) : item.icon
   }
 }

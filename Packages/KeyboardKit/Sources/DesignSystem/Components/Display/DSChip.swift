@@ -16,14 +16,14 @@ public enum DSChipSize: Sendable {
 
 public struct DSChip: View {
   private let title: String
-  private let icon: String?
+  private let icon: DSIcon?
   private let style: DSChipStyle
   private let size: DSChipSize
   private let onTap: (() -> Void)?
 
   public init(
     _ title: String,
-    icon: String? = nil,
+    icon: DSIcon? = nil,
     style: DSChipStyle = .neutral,
     size: DSChipSize = .medium,
     onTap: (() -> Void)? = nil
@@ -49,8 +49,7 @@ public struct DSChip: View {
   private var content: some View {
     HStack(spacing: DSSpacing.xxs) {
       if let icon = self.icon {
-        Image(systemName: icon)
-          .font(.system(size: self.iconSize, weight: .semibold))
+        DSIconView(icon, weight: .regular, size: self.iconSize, tint: self.foreground)
       }
       DSText(self.title, style: self.textStyle, color: self.foreground)
     }

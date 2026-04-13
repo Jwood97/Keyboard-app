@@ -8,7 +8,8 @@ public enum DSIconButtonStyle: Sendable {
 }
 
 public struct DSIconButton: View {
-  private let icon: String
+  private let icon: DSIcon
+  private let weight: DSIconWeight
   private let style: DSIconButtonStyle
   private let size: DSButtonSize
   private let tint: Color
@@ -16,13 +17,15 @@ public struct DSIconButton: View {
   @Environment(\.isEnabled) private var isEnabled: Bool
 
   public init(
-    icon: String,
+    icon: DSIcon,
+    weight: DSIconWeight = .regular,
     style: DSIconButtonStyle = .soft,
     size: DSButtonSize = .medium,
     tint: Color = DSColor.Accent.primary,
     action: @escaping () -> Void
   ) {
     self.icon = icon
+    self.weight = weight
     self.style = style
     self.size = size
     self.tint = tint
@@ -34,10 +37,13 @@ public struct DSIconButton: View {
       DSHaptics.impact(.light)
       self.action()
     } label: {
-      Image(systemName: self.icon)
-        .font(.system(size: self.size.iconSize + 2, weight: .semibold))
-        .foregroundStyle(self.foreground)
-        .frame(width: self.size.height, height: self.size.height)
+      DSIconView(
+        self.icon,
+        weight: self.weight,
+        size: self.size.iconSize + 4,
+        tint: self.foreground
+      )
+      .frame(width: self.size.height, height: self.size.height)
     }
     .buttonStyle(IconButtonStyle(
       style: self.style,

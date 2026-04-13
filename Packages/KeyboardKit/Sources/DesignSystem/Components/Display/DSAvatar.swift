@@ -40,7 +40,7 @@ public enum DSAvatarSize: Sendable {
 
 public enum DSAvatarContent: Sendable {
   case initials(String)
-  case systemIcon(String)
+  case icon(DSIcon, weight: DSIconWeight = .fill)
 }
 
 public struct DSAvatar: View {
@@ -76,10 +76,8 @@ public struct DSAvatar: View {
         Text(Self.initials(from: value))
           .font(.system(size: self.size.fontSize, weight: .semibold, design: .rounded))
           .foregroundStyle(self.tint)
-      case let .systemIcon(name):
-        Image(systemName: name)
-          .font(.system(size: self.size.fontSize, weight: .semibold))
-          .foregroundStyle(self.tint)
+      case let .icon(icon, weight):
+        DSIconView(icon, weight: weight, size: self.size.fontSize + 4, tint: self.tint)
     }
   }
 

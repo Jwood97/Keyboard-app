@@ -30,9 +30,7 @@ public struct DSInlineMessage: View {
 
   public var body: some View {
     HStack(alignment: .top, spacing: DSSpacing.sm) {
-      Image(systemName: self.iconName)
-        .font(.system(size: 18, weight: .semibold))
-        .foregroundStyle(self.tint)
+      DSIconView(self.icon, weight: .fill, size: 20, tint: self.tint)
       VStack(alignment: .leading, spacing: 4) {
         DSText(self.title, style: .bodyStrong)
         if let description = self.description {
@@ -51,9 +49,7 @@ public struct DSInlineMessage: View {
       Spacer(minLength: DSSpacing.xs)
       if let onDismiss = self.onDismiss {
         Button(action: onDismiss) {
-          Image(systemName: "xmark")
-            .font(.system(size: 12, weight: .semibold))
-            .foregroundStyle(DSColor.Text.tertiary)
+          DSIconView(DSIcon.UI.close, weight: .regular, size: 14, tint: DSColor.Text.tertiary)
         }
         .buttonStyle(.plain)
       }
@@ -69,16 +65,16 @@ public struct DSInlineMessage: View {
     )
   }
 
-  private var iconName: String {
+  private var icon: DSIcon {
     switch self.kind {
       case .info:
-        return "info.circle.fill"
+        return DSIcon.Status.info
       case .success:
-        return "checkmark.seal.fill"
+        return DSIcon.Status.success
       case .warning:
-        return "exclamationmark.triangle.fill"
+        return DSIcon.Status.warning
       case .error:
-        return "xmark.octagon.fill"
+        return DSIcon.Status.error
     }
   }
 

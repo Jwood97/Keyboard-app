@@ -9,6 +9,7 @@ public struct DSGallery: View {
         VStack(alignment: .leading, spacing: DSSpacing.xl) {
           ColorGallery()
           TypographyGallery()
+          IconGallery()
           ButtonGallery()
           InputGallery()
           ContainerGallery()
@@ -117,6 +118,50 @@ private struct TypographyGallery: View {
   }
 }
 
+private struct IconGallery: View {
+  private let preview: [DSIcon] = [
+    .leaf, .sparkle, .waveform, .microphone, .brain,
+    .gear, .house, .heart, .bookmark, .trash,
+    .magnifyingGlass, .bell, .star, .lightning, .cloud,
+    .moon, .sun, .palette, .pencilSimple, .chatCircle
+  ]
+
+  var body: some View {
+    VStack(alignment: .leading, spacing: DSSpacing.sm) {
+      SectionTitle(title: "Icons (Phosphor)")
+      DSCard {
+        VStack(alignment: .leading, spacing: DSSpacing.md) {
+          DSText("Regular weight", style: .captionStrong, color: DSColor.Text.secondary)
+          self.grid(weight: .regular)
+          DSText("Fill weight", style: .captionStrong, color: DSColor.Text.secondary)
+          self.grid(weight: .fill)
+          DSText("\(DSIcon.all.count) icons available — typed via DSIcon static members.", style: .caption, color: DSColor.Text.tertiary)
+        }
+      }
+    }
+  }
+
+  private func grid(weight: DSIconWeight) -> some View {
+    let columns = Array(repeating: GridItem(.flexible(), spacing: DSSpacing.sm), count: 5)
+    return LazyVGrid(columns: columns, spacing: DSSpacing.sm) {
+      ForEach(self.preview) { icon in
+        VStack(spacing: 4) {
+          DSIconView(icon, weight: weight, size: 26, tint: DSColor.Accent.primary)
+            .frame(height: 32)
+          DSText(icon.rawName, style: .caption, color: DSColor.Text.tertiary, alignment: .center)
+            .lineLimit(1)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, DSSpacing.xs)
+        .background(
+          RoundedRectangle(cornerRadius: DSRadius.sm, style: .continuous)
+            .fill(DSColor.Background.raised)
+        )
+      }
+    }
+  }
+}
+
 private struct ButtonGallery: View {
   @State private var loading = false
 
@@ -125,7 +170,7 @@ private struct ButtonGallery: View {
       SectionTitle(title: "Buttons")
       DSCard {
         VStack(alignment: .leading, spacing: DSSpacing.md) {
-          DSButton("Primary action", icon: "sparkles", fullWidth: true, action: {})
+          DSButton("Primary action", icon: .sparkle, fullWidth: true, action: {})
           DSButton("Secondary", variant: .secondary, fullWidth: true, action: {})
           DSButton("Tertiary", variant: .tertiary, fullWidth: true, action: {})
           DSButton("Ghost", variant: .ghost, fullWidth: true, action: {})
@@ -139,10 +184,10 @@ private struct ButtonGallery: View {
             DSButton("Loading", isLoading: self.loading, action: {
               self.loading.toggle()
             })
-            DSIconButton(icon: "bell.fill", style: .filled, action: {})
-            DSIconButton(icon: "heart.fill", style: .soft, action: {})
-            DSIconButton(icon: "bookmark", style: .outline, action: {})
-            DSIconButton(icon: "ellipsis", style: .ghost, action: {})
+            DSIconButton(icon: .bell, weight: .fill, style: .filled, action: {})
+            DSIconButton(icon: .heart, weight: .fill, style: .soft, action: {})
+            DSIconButton(icon: .bookmark, style: .outline, action: {})
+            DSIconButton(icon: .dotsThree, style: .ghost, action: {})
           }
         }
       }
@@ -172,23 +217,23 @@ private struct InputGallery: View {
             "you@keyboard.app",
             text: self.$text,
             title: "Email",
-            leadingIcon: "envelope",
+            leadingIcon: .envelope,
             helperText: "We'll never share it."
           )
           DSTextField(
             "••••••••",
             text: self.$secure,
             title: "Password",
-            leadingIcon: "lock",
+            leadingIcon: .lock,
             isSecure: true
           )
           DSTextEditor("What did you think?", text: self.$editorText, title: "Feedback", maxLength: 140)
           DSSearchBar(query: self.$query)
           DSSegmentedControl(
             options: [
-              .init(id: "models", title: "Models", icon: "brain.head.profile"),
-              .init(id: "voice", title: "Voice", icon: "waveform"),
-              .init(id: "haptics", title: "Haptics", icon: "hand.tap")
+              .init(id: "models", title: "Models", icon: .brain),
+              .init(id: "voice", title: "Voice", icon: .waveform),
+              .init(id: "haptics", title: "Haptics", icon: .handTap)
             ],
             selection: self.$segment
           )
@@ -198,7 +243,7 @@ private struct InputGallery: View {
             "Voice auto-punctuation",
             isOn: self.$toggle,
             subtitle: "Adds periods and commas automatically.",
-            icon: "waveform"
+            icon: .waveform
           )
           HStack(spacing: DSSpacing.lg) {
             DSCheckbox("Launch sound", isChecked: self.$checked)
@@ -217,12 +262,12 @@ private struct ContainerGallery: View {
       SectionTitle(title: "Cards & Lists")
       DSCard(style: .elevated) {
         HStack(spacing: DSSpacing.md) {
-          DSAvatar(.systemIcon("leaf.fill"), size: .lg)
+          DSAvatar(.icon(.leaf, weight: .fill), size: .lg)
           VStack(alignment: .leading, spacing: 4) {
             DSText("Matcha Blend", style: .titleSmall)
             DSText("On-device. Warm, calm, and clean.", style: .footnote, color: DSColor.Text.secondary)
             HStack {
-              DSChip("New", icon: "sparkles", style: .accent)
+              DSChip("New", icon: .sparkle, style: .accent)
               DSChip("Beta", style: .warning, size: .small)
             }
           }
@@ -232,7 +277,7 @@ private struct ContainerGallery: View {
         DSListRow(
           "Voice typing",
           subtitle: "Parakeet TDT 0.6B",
-          icon: "waveform",
+          icon: .waveform,
           accessory: .chevron,
           action: {}
         )
@@ -240,14 +285,14 @@ private struct ContainerGallery: View {
         DSListRow(
           "Haptics",
           subtitle: "Subtle feedback on every key",
-          icon: "hand.tap",
+          icon: .handTap,
           accessory: .info("On"),
           action: {}
         )
         DSDivider()
         DSListRow(
           "Remove keyboard",
-          icon: "trash",
+          icon: .trash,
           accessory: .none,
           destructive: true,
           action: {}
@@ -286,7 +331,7 @@ private struct FeedbackGallery: View {
           DSEmptyState(
             title: "No models yet",
             message: "Download a Parakeet model to start voice typing.",
-            icon: "tray",
+            icon: .tray,
             primaryAction: (label: "Browse models", handler: {})
           )
         }
@@ -311,15 +356,15 @@ private struct NavigationGallery: View {
               DSBackButton(action: {})
             },
             trailing: {
-              DSIconButton(icon: "gearshape", style: .ghost, tint: DSColor.Text.primary, action: {})
+              DSIconButton(icon: .gear, style: .ghost, tint: DSColor.Text.primary, action: {})
             }
           )
           Divider().overlay(DSColor.Border.subtle)
           DSTabBar(
             items: [
-              .init(id: "home", title: "Home", icon: "house", selectedIcon: "house.fill"),
-              .init(id: "models", title: "Models", icon: "brain", selectedIcon: "brain.head.profile", badge: "1"),
-              .init(id: "settings", title: "Settings", icon: "gearshape", selectedIcon: "gearshape.fill")
+              .init(id: "home", title: "Home", icon: .house),
+              .init(id: "models", title: "Models", icon: .brain, badge: "1"),
+              .init(id: "settings", title: "Settings", icon: .gear)
             ],
             selection: self.$tab
           )

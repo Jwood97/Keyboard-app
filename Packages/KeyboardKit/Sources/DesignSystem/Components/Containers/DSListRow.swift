@@ -10,7 +10,8 @@ public enum DSListRowAccessory: Sendable {
 public struct DSListRow<Trailing: View>: View {
   private let title: String
   private let subtitle: String?
-  private let icon: String?
+  private let icon: DSIcon?
+  private let iconWeight: DSIconWeight
   private let iconTint: Color
   private let accessory: DSListRowAccessory
   private let destructive: Bool
@@ -20,7 +21,8 @@ public struct DSListRow<Trailing: View>: View {
   public init(
     _ title: String,
     subtitle: String? = nil,
-    icon: String? = nil,
+    icon: DSIcon? = nil,
+    iconWeight: DSIconWeight = .regular,
     iconTint: Color = DSColor.Accent.primary,
     accessory: DSListRowAccessory = .chevron,
     destructive: Bool = false,
@@ -30,6 +32,7 @@ public struct DSListRow<Trailing: View>: View {
     self.title = title
     self.subtitle = subtitle
     self.icon = icon
+    self.iconWeight = iconWeight
     self.iconTint = iconTint
     self.accessory = accessory
     self.destructive = destructive
@@ -56,18 +59,21 @@ public struct DSListRow<Trailing: View>: View {
   private var content: some View {
     HStack(spacing: DSSpacing.sm) {
       if let icon = self.icon {
-        Image(systemName: icon)
-          .font(.system(size: 18, weight: .semibold))
-          .foregroundStyle(self.destructive ? DSColor.Status.danger : self.iconTint)
-          .frame(width: 36, height: 36)
-          .background(
-            RoundedRectangle(cornerRadius: DSRadius.sm, style: .continuous)
-              .fill(
-                self.destructive
-                  ? DSColor.Status.dangerSurface
-                  : self.iconTint.opacity(0.14)
-              )
-          )
+        DSIconView(
+          icon,
+          weight: self.iconWeight,
+          size: 20,
+          tint: self.destructive ? DSColor.Status.danger : self.iconTint
+        )
+        .frame(width: 36, height: 36)
+        .background(
+          RoundedRectangle(cornerRadius: DSRadius.sm, style: .continuous)
+            .fill(
+              self.destructive
+                ? DSColor.Status.dangerSurface
+                : self.iconTint.opacity(0.14)
+            )
+        )
       }
       VStack(alignment: .leading, spacing: 2) {
         DSText(
@@ -97,9 +103,7 @@ public struct DSListRow<Trailing: View>: View {
       case .none:
         EmptyView()
       case .chevron:
-        Image(systemName: "chevron.right")
-          .font(.system(size: 13, weight: .semibold))
-          .foregroundStyle(DSColor.Text.tertiary)
+        DSIconView(DSIcon.UI.chevronRight, weight: .regular, size: 14, tint: DSColor.Text.tertiary)
       case let .info(text):
         DSText(text, style: .footnote, color: DSColor.Text.secondary)
       case let .badge(text):
