@@ -21,7 +21,7 @@ public struct DSSearchBar: View {
       DSIconView(DSIcon.UI.search, weight: .regular, size: 18, tint: DSColor.Text.tertiary)
       TextField(self.placeholder, text: self.$query)
         .focused(self.$isFocused)
-        .font(DSTypography.body)
+        .font(DSTypography.body.font)
         .foregroundStyle(DSColor.Text.primary)
         .submitLabel(.search)
         .onSubmit { self.onSubmit?() }

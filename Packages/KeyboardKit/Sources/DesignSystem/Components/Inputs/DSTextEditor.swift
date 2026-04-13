@@ -35,7 +35,7 @@ public struct DSTextEditor: View {
         }
         TextEditor(text: self.$text)
           .focused(self.$isFocused)
-          .font(DSTypography.body)
+          .font(DSTypography.body.font)
           .foregroundStyle(DSColor.Text.primary)
           .scrollContentBackground(.hidden)
           .padding(.horizontal, DSSpacing.sm)

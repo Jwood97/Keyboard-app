@@ -38,8 +38,13 @@ public struct DSChip: View {
   public var body: some View {
     Group {
       if let onTap = self.onTap {
-        Button(action: onTap) { self.content }
-          .buttonStyle(.plain)
+        Button {
+          DSHaptics.selection()
+          onTap()
+        } label: {
+          self.content
+        }
+        .buttonStyle(DSChipPressStyle())
       } else {
         self.content
       }
@@ -152,5 +157,14 @@ public struct DSChip: View {
       case .medium:
         return .footnote
     }
+  }
+}
+
+private struct DSChipPressStyle: ButtonStyle {
+  func makeBody(configuration: Configuration) -> some View {
+    configuration.label
+      .scaleEffect(configuration.isPressed ? 0.95 : 1.0)
+      .opacity(configuration.isPressed ? 0.85 : 1.0)
+      .animation(DSMotion.press, value: configuration.isPressed)
   }
 }

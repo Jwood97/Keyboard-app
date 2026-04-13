@@ -68,7 +68,8 @@ public struct DSSwitch: View {
           .dsShadow(DSElevation.xs)
           .padding(3)
       }
+      .contentShape(Capsule())
     }
-    .buttonStyle(.plain)
+    .buttonStyle(DSPressScaleStyle(pressedScale: 0.96))
   }
 }

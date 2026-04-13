@@ -42,26 +42,3 @@ public struct DSProgressRing: View {
   }
 }
 
-public struct DSSpinner: View {
-  private let size: CGFloat
-  private let tint: Color
-  @State private var rotation: Double = 0
-
-  public init(size: CGFloat = 24, tint: Color = DSColor.Accent.primary) {
-    self.size = size
-    self.tint = tint
-  }
-
-  public var body: some View {
-    Circle()
-      .trim(from: 0.15, to: 0.85)
-      .stroke(self.tint, style: StrokeStyle(lineWidth: max(2, self.size / 10), lineCap: .round))
-      .frame(width: self.size, height: self.size)
-      .rotationEffect(.degrees(self.rotation))
-      .onAppear {
-        withAnimation(.linear(duration: 0.9).repeatForever(autoreverses: false)) {
-          self.rotation = 360
-        }
-      }
-  }
-}

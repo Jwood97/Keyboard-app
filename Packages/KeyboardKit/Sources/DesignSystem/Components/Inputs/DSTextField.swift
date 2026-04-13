@@ -102,7 +102,7 @@ public struct DSTextField: View {
     if self.isSecure && !self.isRevealed {
       SecureField(self.placeholder, text: self.$text)
         .focused(self.$isFocused)
-        .font(DSTypography.body)
+        .font(DSTypography.body.font)
         .foregroundStyle(DSColor.Text.primary)
         .textContentType(self.textContentType)
         .submitLabel(self.submitLabel)
@@ -110,7 +110,7 @@ public struct DSTextField: View {
     } else {
       TextField(self.placeholder, text: self.$text)
         .focused(self.$isFocused)
-        .font(DSTypography.body)
+        .font(DSTypography.body.font)
         .foregroundStyle(DSColor.Text.primary)
         .textContentType(self.textContentType)
         .keyboardType(self.keyboardType)

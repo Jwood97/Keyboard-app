@@ -99,10 +99,7 @@ public struct DSButton: View {
           DSIconView(icon, weight: self.iconWeight, size: self.size.iconSize + 2, tint: self.foreground)
         }
         if self.isLoading {
-          ProgressView()
-            .progressViewStyle(.circular)
-            .controlSize(.small)
-            .tint(self.foreground)
+          DSSpinner(style: .arc, size: self.size.iconSize + 4, tint: self.foreground, trackOpacity: 0.25)
         } else {
           DSText(self.title, style: self.size.textStyle, color: self.foreground)
         }

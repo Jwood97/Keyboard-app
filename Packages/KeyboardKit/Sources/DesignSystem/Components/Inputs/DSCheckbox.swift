@@ -12,7 +12,7 @@ public struct DSCheckbox: View {
   public var body: some View {
     Button {
       DSHaptics.selection()
-      withAnimation(DSMotion.quick) {
+      withAnimation(self.isChecked ? DSMotion.checkOut : DSMotion.checkIn) {
         self.isChecked.toggle()
       }
     } label: {
@@ -29,13 +29,30 @@ public struct DSCheckbox: View {
             .frame(width: 22, height: 22)
           if self.isChecked {
             DSIconView(DSIcon.UI.check, weight: .fill, size: 14, tint: DSColor.Text.onAccent)
+              .transition(.asymmetric(
+                insertion: .scale(scale: 0.3).combined(with: .opacity),
+                removal: .opacity
+              ))
           }
         }
         if let title = self.title {
           DSText(title, style: .body)
         }
       }
+      .contentShape(Rectangle())
     }
-    .buttonStyle(.plain)
+    .buttonStyle(DSPressScaleStyle(pressedScale: 0.92))
+  }
+}
+
+struct DSPressScaleStyle: ButtonStyle {
+  var pressedScale: CGFloat = 0.97
+  var pressedOpacity: Double = 1.0
+
+  func makeBody(configuration: Configuration) -> some View {
+    configuration.label
+      .scaleEffect(configuration.isPressed ? self.pressedScale : 1.0)
+      .opacity(configuration.isPressed ? self.pressedOpacity : 1.0)
+      .animation(DSMotion.press, value: configuration.isPressed)
   }
 }

@@ -116,8 +116,10 @@ private struct RowButtonStyle: ButtonStyle {
   func makeBody(configuration: Configuration) -> some View {
     configuration.label
       .background(
-        configuration.isPressed ? DSColor.Background.raised : Color.clear
+        (configuration.isPressed ? DSColor.Background.raised : Color.clear)
+          .animation(DSMotion.quick, value: configuration.isPressed)
       )
-      .animation(DSMotion.quick, value: configuration.isPressed)
+      .scaleEffect(configuration.isPressed ? 0.99 : 1.0)
+      .animation(DSMotion.press, value: configuration.isPressed)
   }
 }

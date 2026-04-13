@@ -28,7 +28,7 @@ public struct DSTabBar<Value: Hashable>: View {
       ForEach(self.items) { item in
         Button {
           DSHaptics.selection()
-          withAnimation(DSMotion.emphasised) {
+          withAnimation(DSMotion.refined) {
             self.selection = item.id
           }
         } label: {
@@ -41,6 +41,8 @@ public struct DSTabBar<Value: Hashable>: View {
                 tint: self.isSelected(item) ? DSColor.Accent.primary : DSColor.Text.tertiary
               )
               .padding(8)
+              .scaleEffect(self.isSelected(item) ? 1.08 : 1.0)
+              .animation(DSMotion.bouncy, value: self.isSelected(item))
               if let badge = item.badge {
                 DSBadge(badge, style: .danger, filled: true)
                   .offset(x: 6, y: -4)
@@ -53,6 +55,7 @@ public struct DSTabBar<Value: Hashable>: View {
             )
           }
           .frame(maxWidth: .infinity)
+          .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
       }

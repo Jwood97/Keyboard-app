@@ -13,8 +13,10 @@ public struct DSRadio<Value: Hashable>: View {
 
   public var body: some View {
     Button {
-      DSHaptics.selection()
-      withAnimation(DSMotion.quick) {
+      if !self.isSelected {
+        DSHaptics.selection()
+      }
+      withAnimation(DSMotion.checkIn) {
         self.selection = self.value
       }
     } label: {
@@ -30,14 +32,16 @@ public struct DSRadio<Value: Hashable>: View {
             Circle()
               .fill(DSColor.Accent.primary)
               .frame(width: 12, height: 12)
+              .transition(.scale(scale: 0.2).combined(with: .opacity))
           }
         }
         if let title = self.title {
           DSText(title, style: .body)
         }
       }
+      .contentShape(Rectangle())
     }
-    .buttonStyle(.plain)
+    .buttonStyle(DSPressScaleStyle(pressedScale: 0.92))
   }
 
   private var isSelected: Bool {

@@ -48,7 +48,7 @@ public struct DSSlider: View {
             )
             .dsShadow(DSElevation.sm)
             .offset(x: self.fillWidth(in: proxy.size.width) - (self.isDragging ? 14 : 11))
-            .animation(DSMotion.quick, value: self.isDragging)
+            .animation(DSMotion.snappy, value: self.isDragging)
         }
         .frame(height: 28)
         .contentShape(Rectangle())
@@ -57,6 +57,9 @@ public struct DSSlider: View {
             .updating(self.$isDragging) { _, state, _ in state = true }
             .onChanged { drag in
               self.updateValue(location: drag.location.x, width: proxy.size.width)
+            }
+            .onEnded { _ in
+              DSHaptics.impact(.light)
             }
         )
       }

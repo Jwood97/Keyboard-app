@@ -23,7 +23,10 @@ let package = Package(
       name: "DesignSystem",
       dependencies: ["AppCore"],
       path: "Sources/DesignSystem",
-      resources: [.process("Resources/Icons.xcassets")]
+      resources: [
+        .process("Resources/Icons.xcassets"),
+        .process("Resources/Fonts")
+      ]
     ),
     .target(name: "Persistence", dependencies: ["AppCore"], path: "Sources/Persistence"),
     .target(name: "ModelCatalog", dependencies: ["AppCore", "Persistence"], path: "Sources/ModelCatalog"),

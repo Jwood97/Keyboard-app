@@ -14,6 +14,7 @@ public struct DSGallery: View {
           InputGallery()
           ContainerGallery()
           FeedbackGallery()
+          SpinnerGallery()
           NavigationGallery()
         }
         .padding(DSSpacing.md)
@@ -102,19 +103,96 @@ private struct TypographyGallery: View {
     VStack(alignment: .leading, spacing: DSSpacing.sm) {
       SectionTitle(title: "Typography")
       DSCard {
-        VStack(alignment: .leading, spacing: DSSpacing.sm) {
-          DSText("Display XL", style: .displayXL)
-          DSText("Display Large", style: .displayLarge)
-          DSText("Display", style: .display)
-          DSText("Title Large", style: .titleLarge)
-          DSText("Title", style: .title)
-          DSText("Headline", style: .headline)
-          DSText("Body text keeps rhythm at 16pt.", style: .body)
-          DSText("Callout emphasises secondary context.", style: .callout)
-          DSText("FOOTNOTE / SECONDARY LABELS", style: .overline, color: DSColor.Text.secondary)
+        VStack(alignment: .leading, spacing: DSSpacing.md) {
+          VStack(alignment: .leading, spacing: DSSpacing.xs) {
+            DSText("Aa", style: .displayXL)
+            DSText("Fraunces — warm editorial serif", style: .captionStrong, color: DSColor.Text.secondary)
+          }
+          DSDivider()
+          VStack(alignment: .leading, spacing: DSSpacing.xs) {
+            DSText("Display XL", style: .displayXL)
+            DSText("Display Large", style: .displayLarge)
+            DSText("Display", style: .display)
+          }
+          DSDivider()
+          VStack(alignment: .leading, spacing: DSSpacing.xs) {
+            DSText("Title Large", style: .titleLarge)
+            DSText("Title", style: .title)
+            DSText("Title Small", style: .titleSmall)
+            DSText("Headline", style: .headline)
+            DSText("Inter Display / Inter — precise, readable UI", style: .caption, color: DSColor.Text.tertiary)
+          }
+          DSDivider()
+          VStack(alignment: .leading, spacing: DSSpacing.xs) {
+            DSText("Body text keeps rhythm at 16pt and flows cleanly across long lines.", style: .body)
+            DSText("Body strong for emphasis in copy.", style: .bodyStrong)
+            DSText("Callout emphasises secondary context.", style: .callout)
+            DSText("Subhead — slightly tighter metadata.", style: .subhead, color: DSColor.Text.secondary)
+            DSText("Footnote — fine print and helpers.", style: .footnote, color: DSColor.Text.secondary)
+            DSText("Caption — 12pt auxiliary labels.", style: .caption, color: DSColor.Text.tertiary)
+            DSText("FOOTNOTE / SECONDARY LABELS", style: .overline, color: DSColor.Text.secondary)
+          }
+          DSDivider()
+          VStack(alignment: .leading, spacing: DSSpacing.xs) {
+            DSText("\u{201C}On-device intelligence that feels calm, focused, and warm.\u{201D}", style: .quote, color: DSColor.Text.secondary)
+            DSText("Fraunces 9pt — soft text serif for pull quotes", style: .caption, color: DSColor.Text.tertiary)
+          }
+          DSDivider()
+          VStack(alignment: .leading, spacing: DSSpacing.xs) {
+            DSText("let model = Parakeet.load()", style: .mono)
+            DSText("retention = 0.94", style: .monoStrong)
+            DSText("JetBrains Mono — precision monospace", style: .caption, color: DSColor.Text.tertiary)
+          }
         }
       }
     }
+  }
+}
+
+private struct SpinnerGallery: View {
+  var body: some View {
+    VStack(alignment: .leading, spacing: DSSpacing.sm) {
+      SectionTitle(title: "Spinners")
+      DSCard {
+        VStack(alignment: .leading, spacing: DSSpacing.md) {
+          HStack(spacing: DSSpacing.lg) {
+            self.spinner(label: "Gradient", style: .gradient)
+            self.spinner(label: "Arc", style: .arc)
+            self.spinner(label: "Dual ring", style: .dualRing)
+            self.spinner(label: "Pulse", style: .pulse)
+            self.spinner(label: "Dots", style: .dots)
+          }
+          DSText("DSSpinner ships in 5 variants and 4 sizes.", style: .caption, color: DSColor.Text.tertiary)
+          HStack(spacing: DSSpacing.lg) {
+            VStack(spacing: 6) {
+              DSSpinner(style: .gradient, size: .small)
+              DSText("S", style: .caption, color: DSColor.Text.tertiary)
+            }
+            VStack(spacing: 6) {
+              DSSpinner(style: .gradient, size: .medium)
+              DSText("M", style: .caption, color: DSColor.Text.tertiary)
+            }
+            VStack(spacing: 6) {
+              DSSpinner(style: .gradient, size: .large)
+              DSText("L", style: .caption, color: DSColor.Text.tertiary)
+            }
+            VStack(spacing: 6) {
+              DSSpinner(style: .gradient, size: .custom(56))
+              DSText("XL", style: .caption, color: DSColor.Text.tertiary)
+            }
+          }
+        }
+      }
+    }
+  }
+
+  private func spinner(label: String, style: DSSpinnerStyle) -> some View {
+    VStack(spacing: 6) {
+      DSSpinner(style: style, size: .medium)
+        .frame(height: 28)
+      DSText(label, style: .caption, color: DSColor.Text.tertiary)
+    }
+    .frame(maxWidth: .infinity)
   }
 }
 

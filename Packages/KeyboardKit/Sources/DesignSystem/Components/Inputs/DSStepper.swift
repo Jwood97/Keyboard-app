@@ -25,12 +25,12 @@ public struct DSStepper: View {
         Spacer(minLength: DSSpacing.sm)
       }
       HStack(spacing: 0) {
-        self.button(icon: DSIcon.UI.minus, action: self.decrement)
-          .disabled(self.value <= self.range.lowerBound)
+        StepperButton(icon: DSIcon.UI.minus, enabled: self.value > self.range.lowerBound, action: self.decrement)
         DSText("\(self.value)", style: .bodyStrong)
           .frame(width: 40)
-        self.button(icon: DSIcon.UI.plus, action: self.increment)
-          .disabled(self.value >= self.range.upperBound)
+          .contentTransition(.numericText(value: Double(self.value)))
+          .animation(DSMotion.snappy, value: self.value)
+        StepperButton(icon: DSIcon.UI.plus, enabled: self.value < self.range.upperBound, action: self.increment)
       }
       .frame(height: 36)
       .background(
@@ -40,22 +40,36 @@ public struct DSStepper: View {
     }
   }
 
-  private func button(icon: DSIcon, action: @escaping () -> Void) -> some View {
-    Button {
-      DSHaptics.impact(.light)
-      action()
-    } label: {
-      DSIconView(icon, weight: .regular, size: 16, tint: DSColor.Accent.primary)
-        .frame(width: 40, height: 36)
-    }
-    .buttonStyle(.plain)
-  }
-
   private func increment() {
-    self.value = min(self.range.upperBound, self.value + self.step)
+    withAnimation(DSMotion.snappy) {
+      self.value = min(self.range.upperBound, self.value + self.step)
+    }
   }
 
   private func decrement() {
-    self.value = max(self.range.lowerBound, self.value - self.step)
+    withAnimation(DSMotion.snappy) {
+      self.value = max(self.range.lowerBound, self.value - self.step)
+    }
+  }
+}
+
+private struct StepperButton: View {
+  let icon: DSIcon
+  let enabled: Bool
+  let action: () -> Void
+
+  var body: some View {
+    Button {
+      if self.enabled {
+        DSHaptics.impact(.light)
+        self.action()
+      }
+    } label: {
+      DSIconView(self.icon, weight: .regular, size: 16, tint: self.enabled ? DSColor.Accent.primary : DSColor.Text.tertiary)
+        .frame(width: 40, height: 36)
+        .opacity(self.enabled ? 1.0 : 0.5)
+    }
+    .buttonStyle(DSPressScaleStyle(pressedScale: 0.85))
+    .disabled(!self.enabled)
   }
 }

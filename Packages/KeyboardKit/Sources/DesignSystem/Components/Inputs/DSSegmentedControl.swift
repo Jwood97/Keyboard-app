@@ -27,7 +27,7 @@ public struct DSSegmentedControl<Value: Hashable>: View {
       ForEach(self.options) { option in
         Button {
           DSHaptics.selection()
-          withAnimation(DSMotion.emphasised) {
+          withAnimation(DSMotion.refined) {
             self.selection = option.id
           }
         } label: {
