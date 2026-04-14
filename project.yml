@@ -47,6 +47,14 @@ packages:
   KeyboardKit:
     path: Packages/KeyboardKit
 
+fileGroups:
+  - Packages/KeyboardKit
+  - Scripts
+  - project.yml
+  - README.md
+  - .swiftlint.yml
+  - .gitignore
+
 targets:
   Keyboard:
     type: application
@@ -59,6 +67,8 @@ targets:
     dependencies:
       - target: KeyboardExtension
         embed: true
+      - package: KeyboardKit
+        product: DesignSystem
       - package: KeyboardKit
         product: AppFeature
       - package: KeyboardKit
