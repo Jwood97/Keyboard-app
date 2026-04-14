@@ -56,13 +56,22 @@ public struct DSNavigationBar<Leading: View, Trailing: View>: View {
 }
 
 public struct DSBackButton: View {
+  private let label: String
   private let action: () -> Void
 
-  public init(action: @escaping () -> Void) {
+  public init(label: String = "Back", action: @escaping () -> Void) {
+    self.label = label
     self.action = action
   }
 
   public var body: some View {
-    DSIconButton(icon: DSIcon.UI.chevronLeft, style: .ghost, size: .medium, tint: DSColor.Text.primary, action: self.action)
+    DSIconButton(
+      icon: DSIcon.UI.chevronLeft,
+      style: .ghost,
+      size: .medium,
+      tint: DSColor.Text.primary,
+      accessibilityLabel: self.label,
+      action: self.action
+    )
   }
 }

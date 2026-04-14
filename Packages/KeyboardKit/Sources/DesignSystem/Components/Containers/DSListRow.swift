@@ -16,7 +16,9 @@ public struct DSListRow<Trailing: View>: View {
   private let accessory: DSListRowAccessory
   private let destructive: Bool
   private let action: (() -> Void)?
+  private let accessibilityHint: String?
   private let trailing: Trailing
+  @Environment(\.isEnabled) private var isEnabled: Bool
 
   public init(
     _ title: String,
@@ -27,6 +29,7 @@ public struct DSListRow<Trailing: View>: View {
     accessory: DSListRowAccessory = .chevron,
     destructive: Bool = false,
     action: (() -> Void)? = nil,
+    accessibilityHint: String? = nil,
     @ViewBuilder trailing: () -> Trailing = { EmptyView() }
   ) {
     self.title = title
@@ -37,6 +40,7 @@ public struct DSListRow<Trailing: View>: View {
     self.accessory = accessory
     self.destructive = destructive
     self.action = action
+    self.accessibilityHint = accessibilityHint
     self.trailing = trailing()
   }
 
@@ -50,9 +54,36 @@ public struct DSListRow<Trailing: View>: View {
           self.content
         }
         .buttonStyle(RowButtonStyle())
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(self.combinedAccessibilityLabel)
+        .accessibilityValue(self.accessoryAccessibilityValue)
+        .accessibilityHint(self.accessibilityHint ?? "")
+        .accessibilityAddTraits(.isButton)
+        .opacity(self.isEnabled ? 1 : 0.5)
       } else {
         self.content
+          .accessibilityElement(children: .combine)
+          .accessibilityLabel(self.combinedAccessibilityLabel)
+          .accessibilityValue(self.accessoryAccessibilityValue)
       }
+    }
+  }
+
+  private var combinedAccessibilityLabel: String {
+    if let subtitle = self.subtitle {
+      return "\(self.title). \(subtitle)"
+    }
+    return self.title
+  }
+
+  private var accessoryAccessibilityValue: String {
+    switch self.accessory {
+      case .info(let text):
+        return text
+      case .badge(let text):
+        return text
+      case .chevron, .none:
+        return ""
     }
   }
 

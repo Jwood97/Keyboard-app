@@ -19,19 +19,23 @@ public struct DSChip: View {
   private let icon: DSIcon?
   private let style: DSChipStyle
   private let size: DSChipSize
+  private let isSelected: Bool
   private let onTap: (() -> Void)?
+  @Environment(\.isEnabled) private var isEnabled: Bool
 
   public init(
     _ title: String,
     icon: DSIcon? = nil,
     style: DSChipStyle = .neutral,
     size: DSChipSize = .medium,
+    isSelected: Bool = false,
     onTap: (() -> Void)? = nil
   ) {
     self.title = title
     self.icon = icon
     self.style = style
     self.size = size
+    self.isSelected = isSelected
     self.onTap = onTap
   }
 
@@ -45,10 +49,13 @@ public struct DSChip: View {
           self.content
         }
         .buttonStyle(DSChipPressStyle())
+        .accessibilityLabel(self.title)
+        .accessibilityAddTraits(self.isSelected ? [.isButton, .isSelected] : .isButton)
       } else {
         self.content
       }
     }
+    .opacity(self.isEnabled ? 1 : 0.5)
   }
 
   private var content: some View {

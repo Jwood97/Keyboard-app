@@ -5,6 +5,7 @@ public struct DSStepper: View {
   private let range: ClosedRange<Int>
   private let step: Int
   @Binding private var value: Int
+  @Environment(\.isEnabled) private var isEnabled: Bool
 
   public init(
     _ title: String? = nil,
@@ -25,28 +26,56 @@ public struct DSStepper: View {
         Spacer(minLength: DSSpacing.sm)
       }
       HStack(spacing: 0) {
-        StepperButton(icon: DSIcon.UI.minus, enabled: self.value > self.range.lowerBound, action: self.decrement)
+        StepperButton(
+          icon: DSIcon.UI.minus,
+          enabled: self.isEnabled && self.value > self.range.lowerBound,
+          label: "Decrement \(self.title ?? "value")",
+          action: self.decrement
+        )
         DSText("\(self.value)", style: .bodyStrong)
           .frame(width: 40)
           .contentTransition(.numericText(value: Double(self.value)))
           .animation(DSMotion.snappy, value: self.value)
-        StepperButton(icon: DSIcon.UI.plus, enabled: self.value < self.range.upperBound, action: self.increment)
+        StepperButton(
+          icon: DSIcon.UI.plus,
+          enabled: self.isEnabled && self.value < self.range.upperBound,
+          label: "Increment \(self.title ?? "value")",
+          action: self.increment
+        )
       }
       .frame(height: 36)
       .background(
         Capsule()
           .fill(DSColor.Background.raised)
       )
+      .opacity(self.isEnabled ? 1 : 0.5)
+    }
+    .accessibilityElement(children: .ignore)
+    .accessibilityLabel(self.title ?? "Stepper")
+    .accessibilityValue("\(self.value)")
+    .accessibilityAdjustableAction { direction in
+      switch direction {
+        case .increment:
+          self.increment()
+        case .decrement:
+          self.decrement()
+        @unknown default:
+          break
+      }
     }
   }
 
   private func increment() {
+    guard self.isEnabled, self.value < self.range.upperBound else { return }
+    DSHaptics.impact(.light)
     withAnimation(DSMotion.snappy) {
       self.value = min(self.range.upperBound, self.value + self.step)
     }
   }
 
   private func decrement() {
+    guard self.isEnabled, self.value > self.range.lowerBound else { return }
+    DSHaptics.impact(.light)
     withAnimation(DSMotion.snappy) {
       self.value = max(self.range.lowerBound, self.value - self.step)
     }
@@ -56,12 +85,12 @@ public struct DSStepper: View {
 private struct StepperButton: View {
   let icon: DSIcon
   let enabled: Bool
+  let label: String
   let action: () -> Void
 
   var body: some View {
     Button {
       if self.enabled {
-        DSHaptics.impact(.light)
         self.action()
       }
     } label: {
@@ -71,5 +100,7 @@ private struct StepperButton: View {
     }
     .buttonStyle(DSPressScaleStyle(pressedScale: 0.85))
     .disabled(!self.enabled)
+    .accessibilityLabel(self.label)
+    .accessibilityHidden(true)
   }
 }

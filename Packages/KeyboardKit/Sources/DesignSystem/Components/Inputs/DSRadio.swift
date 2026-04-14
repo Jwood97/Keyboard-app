@@ -3,12 +3,20 @@ import SwiftUI
 public struct DSRadio<Value: Hashable>: View {
   private let title: String?
   private let value: Value
+  private let accessibilityLabel: String?
   @Binding private var selection: Value
+  @Environment(\.isEnabled) private var isEnabled: Bool
 
-  public init(_ title: String? = nil, value: Value, selection: Binding<Value>) {
+  public init(
+    _ title: String? = nil,
+    value: Value,
+    selection: Binding<Value>,
+    accessibilityLabel: String? = nil
+  ) {
     self.title = title
     self.value = value
     self._selection = selection
+    self.accessibilityLabel = accessibilityLabel
   }
 
   public var body: some View {
@@ -40,8 +48,13 @@ public struct DSRadio<Value: Hashable>: View {
         }
       }
       .contentShape(Rectangle())
+      .opacity(self.isEnabled ? 1 : 0.5)
     }
     .buttonStyle(DSPressScaleStyle(pressedScale: 0.92))
+    .accessibilityElement(children: .ignore)
+    .accessibilityLabel(self.accessibilityLabel ?? self.title ?? "Radio")
+    .accessibilityValue(self.isSelected ? "Selected" : "Not selected")
+    .accessibilityAddTraits(self.isSelected ? [.isButton, .isSelected] : .isButton)
   }
 
   private var isSelected: Bool {

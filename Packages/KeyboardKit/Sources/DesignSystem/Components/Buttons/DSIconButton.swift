@@ -13,6 +13,7 @@ public struct DSIconButton: View {
   private let style: DSIconButtonStyle
   private let size: DSButtonSize
   private let tint: Color
+  private let accessibilityLabel: String?
   private let action: () -> Void
   @Environment(\.isEnabled) private var isEnabled: Bool
 
@@ -22,6 +23,7 @@ public struct DSIconButton: View {
     style: DSIconButtonStyle = .soft,
     size: DSButtonSize = .medium,
     tint: Color = DSColor.Accent.primary,
+    accessibilityLabel: String? = nil,
     action: @escaping () -> Void
   ) {
     self.icon = icon
@@ -29,6 +31,7 @@ public struct DSIconButton: View {
     self.style = style
     self.size = size
     self.tint = tint
+    self.accessibilityLabel = accessibilityLabel
     self.action = action
   }
 
@@ -50,6 +53,8 @@ public struct DSIconButton: View {
       tint: self.tint,
       isEnabled: self.isEnabled
     ))
+    .accessibilityLabel(self.accessibilityLabel ?? self.icon.rawName)
+    .accessibilityAddTraits(.isButton)
   }
 
   private var foreground: Color {

@@ -7,6 +7,7 @@ public struct DSSlider: View {
   private let valueFormatter: (Double) -> String
   @Binding private var value: Double
   @GestureState private var isDragging: Bool = false
+  @Environment(\.isEnabled) private var isEnabled: Bool
 
   public init(
     _ title: String? = nil,
@@ -29,6 +30,8 @@ public struct DSSlider: View {
           DSText(title, style: .captionStrong, color: DSColor.Text.secondary)
           Spacer()
           DSText(self.valueFormatter(self.value), style: .captionStrong, color: DSColor.Accent.primary)
+            .contentTransition(.numericText())
+            .animation(DSMotion.snappy, value: self.value)
         }
       }
       GeometryReader { proxy in
@@ -53,17 +56,36 @@ public struct DSSlider: View {
         .frame(height: 28)
         .contentShape(Rectangle())
         .gesture(
-          DragGesture(minimumDistance: 0)
-            .updating(self.$isDragging) { _, state, _ in state = true }
-            .onChanged { drag in
-              self.updateValue(location: drag.location.x, width: proxy.size.width)
-            }
-            .onEnded { _ in
-              DSHaptics.impact(.light)
-            }
+          self.isEnabled
+            ? DragGesture(minimumDistance: 0)
+              .updating(self.$isDragging) { _, state, _ in state = true }
+              .onChanged { drag in
+                self.updateValue(location: drag.location.x, width: proxy.size.width)
+              }
+              .onEnded { _ in
+                DSHaptics.impact(.light)
+              }
+            : nil
         )
       }
       .frame(height: 28)
+      .opacity(self.isEnabled ? 1 : 0.5)
+    }
+    .accessibilityElement(children: .ignore)
+    .accessibilityLabel(self.title ?? "Slider")
+    .accessibilityValue(self.valueFormatter(self.value))
+    .accessibilityAdjustableAction { direction in
+      let increment = self.step ?? ((self.range.upperBound - self.range.lowerBound) / 20)
+      switch direction {
+        case .increment:
+          self.value = min(self.range.upperBound, self.value + increment)
+          DSHaptics.impact(.light)
+        case .decrement:
+          self.value = max(self.range.lowerBound, self.value - increment)
+          DSHaptics.impact(.light)
+        @unknown default:
+          break
+      }
     }
   }
 

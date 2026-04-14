@@ -25,7 +25,7 @@ public struct DSTabBar<Value: Hashable>: View {
 
   public var body: some View {
     HStack(spacing: 0) {
-      ForEach(self.items) { item in
+      ForEach(Array(self.items.enumerated()), id: \.element.id) { index, item in
         Button {
           DSHaptics.selection()
           withAnimation(DSMotion.refined) {
@@ -58,6 +58,10 @@ public struct DSTabBar<Value: Hashable>: View {
           .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(self.accessibilityLabel(for: item))
+        .accessibilityValue("Tab \(index + 1) of \(self.items.count)")
+        .accessibilityAddTraits(self.isSelected(item) ? [.isButton, .isSelected] : .isButton)
       }
     }
     .padding(.horizontal, DSSpacing.sm)
@@ -77,5 +81,12 @@ public struct DSTabBar<Value: Hashable>: View {
 
   private func isSelected(_ item: DSTabBarItem<Value>) -> Bool {
     self.selection == item.id
+  }
+
+  private func accessibilityLabel(for item: DSTabBarItem<Value>) -> String {
+    if let badge = item.badge {
+      return "\(item.title), \(badge) new"
+    }
+    return item.title
   }
 }

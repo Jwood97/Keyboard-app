@@ -285,6 +285,7 @@ private struct InputGallery: View {
   @State private var slider: Double = 0.65
   @State private var steps: Int = 3
   @State private var query = ""
+  @State private var disabledText = "Read-only value"
 
   var body: some View {
     VStack(alignment: .leading, spacing: DSSpacing.sm) {
@@ -296,16 +297,39 @@ private struct InputGallery: View {
             text: self.$text,
             title: "Email",
             leadingIcon: .envelope,
-            helperText: "We'll never share it."
+            helperText: "We'll never share it.",
+            validation: .all([.required(), .email()]),
+            keyboardType: .emailAddress,
+            autocapitalization: .never,
+            autocorrectionDisabled: true,
+            textContentType: .emailAddress
           )
           DSTextField(
             "••••••••",
             text: self.$secure,
             title: "Password",
             leadingIcon: .lock,
-            isSecure: true
+            helperText: "At least 8 characters.",
+            validation: .all([.required(), .minLength(8)]),
+            isSecure: true,
+            autocapitalization: .never,
+            autocorrectionDisabled: true,
+            textContentType: .newPassword
           )
-          DSTextEditor("What did you think?", text: self.$editorText, title: "Feedback", maxLength: 140)
+          DSTextField(
+            "Disabled input",
+            text: self.$disabledText,
+            title: "Locked",
+            leadingIcon: .lock
+          )
+          .disabled(true)
+          DSTextEditor(
+            "What did you think?",
+            text: self.$editorText,
+            title: "Feedback",
+            maxLength: 140,
+            validation: .minLength(10, message: "Tell us a bit more.")
+          )
           DSSearchBar(query: self.$query)
           DSSegmentedControl(
             options: [
@@ -338,7 +362,7 @@ private struct ContainerGallery: View {
   var body: some View {
     VStack(alignment: .leading, spacing: DSSpacing.sm) {
       SectionTitle(title: "Cards & Lists")
-      DSCard(style: .elevated) {
+      DSCard(style: .elevated, action: {}) {
         HStack(spacing: DSSpacing.md) {
           DSAvatar(.icon(.leaf, weight: .fill), size: .lg)
           VStack(alignment: .leading, spacing: 4) {
@@ -349,6 +373,8 @@ private struct ContainerGallery: View {
               DSChip("Beta", style: .warning, size: .small)
             }
           }
+          Spacer(minLength: 0)
+          DSIconView(DSIcon.UI.chevronRight, weight: .regular, size: 14, tint: DSColor.Text.tertiary)
         }
       }
       DSSection("Preferences", footer: "Used across the app and keyboard.") {

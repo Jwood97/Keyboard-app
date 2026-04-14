@@ -5,6 +5,7 @@ public struct DSToggle: View {
   private let subtitle: String?
   private let icon: DSIcon?
   @Binding private var isOn: Bool
+  @Environment(\.isEnabled) private var isEnabled: Bool
 
   public init(
     _ title: String,
@@ -37,11 +38,17 @@ public struct DSToggle: View {
       Spacer(minLength: DSSpacing.sm)
       DSSwitch(isOn: self.$isOn)
     }
+    .opacity(self.isEnabled ? 1 : 0.5)
+    .accessibilityElement(children: .combine)
+    .accessibilityLabel(self.subtitle.map { "\(self.title). \($0)" } ?? self.title)
+    .accessibilityValue(self.isOn ? "On" : "Off")
+    .accessibilityAddTraits(.isButton)
   }
 }
 
 public struct DSSwitch: View {
   @Binding private var isOn: Bool
+  @Environment(\.isEnabled) private var isEnabled: Bool
 
   public init(isOn: Binding<Bool>) {
     self._isOn = isOn
@@ -69,7 +76,12 @@ public struct DSSwitch: View {
           .padding(3)
       }
       .contentShape(Capsule())
+      .opacity(self.isEnabled ? 1 : 0.5)
     }
     .buttonStyle(DSPressScaleStyle(pressedScale: 0.96))
+    .accessibilityElement(children: .ignore)
+    .accessibilityLabel("Switch")
+    .accessibilityValue(self.isOn ? "On" : "Off")
+    .accessibilityAddTraits(self.isOn ? [.isButton, .isSelected] : .isButton)
   }
 }

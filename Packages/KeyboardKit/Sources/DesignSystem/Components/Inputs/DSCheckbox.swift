@@ -2,11 +2,18 @@ import SwiftUI
 
 public struct DSCheckbox: View {
   private let title: String?
+  private let accessibilityLabel: String?
   @Binding private var isChecked: Bool
+  @Environment(\.isEnabled) private var isEnabled: Bool
 
-  public init(_ title: String? = nil, isChecked: Binding<Bool>) {
+  public init(
+    _ title: String? = nil,
+    isChecked: Binding<Bool>,
+    accessibilityLabel: String? = nil
+  ) {
     self.title = title
     self._isChecked = isChecked
+    self.accessibilityLabel = accessibilityLabel
   }
 
   public var body: some View {
@@ -40,8 +47,13 @@ public struct DSCheckbox: View {
         }
       }
       .contentShape(Rectangle())
+      .opacity(self.isEnabled ? 1 : 0.5)
     }
     .buttonStyle(DSPressScaleStyle(pressedScale: 0.92))
+    .accessibilityElement(children: .ignore)
+    .accessibilityLabel(self.accessibilityLabel ?? self.title ?? "Checkbox")
+    .accessibilityValue(self.isChecked ? "Checked" : "Not checked")
+    .accessibilityAddTraits(self.isChecked ? [.isButton, .isSelected] : .isButton)
   }
 }
 

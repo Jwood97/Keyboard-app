@@ -16,6 +16,7 @@ public struct DSSegmentedControl<Value: Hashable>: View {
   private let options: [Option]
   @Binding private var selection: Value
   @Namespace private var namespace
+  @Environment(\.isEnabled) private var isEnabled: Bool
 
   public init(options: [Option], selection: Binding<Value>) {
     self.options = options
@@ -56,8 +57,11 @@ public struct DSSegmentedControl<Value: Hashable>: View {
                 .matchedGeometryEffect(id: "segment", in: self.namespace)
             }
           }
+          .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
+        .accessibilityLabel(option.title)
+        .accessibilityAddTraits(self.selection == option.id ? [.isButton, .isSelected] : .isButton)
       }
     }
     .padding(4)
@@ -65,5 +69,7 @@ public struct DSSegmentedControl<Value: Hashable>: View {
       RoundedRectangle(cornerRadius: DSRadius.sm + 4, style: .continuous)
         .fill(DSColor.Background.raised)
     )
+    .opacity(self.isEnabled ? 1 : 0.5)
+    .disabled(!self.isEnabled)
   }
 }
