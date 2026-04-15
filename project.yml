@@ -102,7 +102,7 @@ targets:
         SUPPORTS_MACCATALYST: NO
 
   KeyboardExtension:
-    type: app-extension.keyboard
+    type: app-extension
     platform: iOS
     sources:
       - path: KeyboardExtension/Sources
