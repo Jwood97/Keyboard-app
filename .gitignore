@@ -27,6 +27,11 @@ xcuserdata/
 *.xcodeproj
 !Packages/**/*.xcodeproj
 
+# Generated icon assets — produced by Scripts/generate-icons.swift via the
+# xcodegen preGenCommand. Run ./Scripts/bootstrap.sh to regenerate after cloning.
+Packages/KeyboardKit/Sources/DesignSystem/Resources/Icons.xcassets/
+Packages/KeyboardKit/Sources/DesignSystem/Icons/Generated/
+
 # Swift Package Manager
 .build/
 .swiftpm/
