@@ -12,9 +12,15 @@ public struct DSGallery: View {
           IconGallery()
           ButtonGallery()
           InputGallery()
+          AdvancedInputGallery()
+          FormFieldGallery()
           ContainerGallery()
+          LayoutGallery()
+          ListSurfaceGallery()
+          DisplayGallery()
           FeedbackGallery()
           SpinnerGallery()
+          OverlaysGallery()
           NavigationGallery()
         }
         .padding(DSSpacing.md)
@@ -446,6 +452,7 @@ private struct FeedbackGallery: View {
 
 private struct NavigationGallery: View {
   @State private var tab: String = "home"
+  @State private var page: Int = 1
 
   var body: some View {
     VStack(alignment: .leading, spacing: DSSpacing.sm) {
@@ -460,7 +467,7 @@ private struct NavigationGallery: View {
               DSBackButton(action: {})
             },
             trailing: {
-              DSIconButton(icon: .gear, style: .ghost, tint: DSColor.Text.primary, action: {})
+              DSIconButton(icon: .gear, style: .ghost, tint: DSColor.Text.primary, accessibilityLabel: "Settings", action: {})
             }
           )
           Divider().overlay(DSColor.Border.subtle)
@@ -474,6 +481,344 @@ private struct NavigationGallery: View {
           )
         }
       }
+      DSCard {
+        VStack(alignment: .leading, spacing: DSSpacing.md) {
+          DSText("Breadcrumbs", style: .captionStrong, color: DSColor.Text.secondary)
+          DSBreadcrumbs(items: [
+            DSBreadcrumb("Settings", handler: {}),
+            DSBreadcrumb("Keyboards", handler: {}),
+            DSBreadcrumb("Voice")
+          ])
+          DSDivider(insets: EdgeInsets())
+          DSText("Page control", style: .captionStrong, color: DSColor.Text.secondary)
+          VStack(spacing: DSSpacing.sm) {
+            DSPageControl(total: 5, current: self.page, style: .dots)
+            DSPageControl(total: 5, current: self.page, style: .bars)
+            DSPageControl(total: 5, current: self.page, style: .numeric)
+          }
+          HStack {
+            DSButton("Prev", variant: .tertiary, size: .small) {
+              self.page = max(0, self.page - 1)
+            }
+            DSButton("Next", variant: .tertiary, size: .small) {
+              self.page = min(4, self.page + 1)
+            }
+          }
+        }
+      }
     }
+  }
+}
+
+private struct ListSurfaceGallery: View {
+  private struct ModelItem: Identifiable {
+    let id = UUID()
+    let title: String
+    let subtitle: String
+    let icon: DSIcon
+  }
+
+  private let models: [ModelItem] = [
+    ModelItem(title: "Parakeet TDT 0.6B", subtitle: "140 MB · On-device", icon: .brain),
+    ModelItem(title: "Parakeet TDT 1.1B", subtitle: "250 MB · On-device", icon: .brain),
+    ModelItem(title: "Whisper Tiny", subtitle: "38 MB · Legacy", icon: .waveform),
+    ModelItem(title: "Custom model", subtitle: "Not installed", icon: .plus)
+  ]
+
+  var body: some View {
+    VStack(alignment: .leading, spacing: DSSpacing.sm) {
+      SectionTitle(title: "Lists & Surfaces")
+      DSCard {
+        VStack(alignment: .leading, spacing: DSSpacing.xs) {
+          DSText("DSList — native UICollectionView", style: .captionStrong, color: DSColor.Text.secondary)
+          DSText(
+            "Best for 20+ items, swipe-to-delete, reordering, pull-to-refresh.",
+            style: .caption,
+            color: DSColor.Text.tertiary
+          )
+        }
+      }
+      DSList {
+        ForEach(self.models) { item in
+          DSListRow(
+            item.title,
+            subtitle: item.subtitle,
+            icon: item.icon,
+            accessory: .chevron,
+            action: {}
+          )
+          DSDivider()
+        }
+      }
+      .frame(height: 56 * CGFloat(self.models.count))
+      .clipShape(RoundedRectangle(cornerRadius: DSRadius.lg, style: .continuous))
+      .overlay(
+        RoundedRectangle(cornerRadius: DSRadius.lg, style: .continuous)
+          .strokeBorder(DSColor.Border.subtle, lineWidth: 1)
+      )
+      DSCard {
+        VStack(alignment: .leading, spacing: DSSpacing.md) {
+          DSText("Layout stacks", style: .captionStrong, color: DSColor.Text.secondary)
+          DSText(
+            "DSVStack (leading / .md) · DSHStack (center / .sm) — encode DS defaults.",
+            style: .caption,
+            color: DSColor.Text.tertiary
+          )
+          DSVStack {
+            DSChip("DSVStack — leading", style: .soft, size: .small)
+            DSChip("spacing: DSSpacing.md", style: .soft, size: .small)
+            DSChip("alignment: .leading", style: .soft, size: .small)
+          }
+          DSHStack {
+            DSChip("DSHStack", style: .accent, size: .small)
+            DSChip("spacing .sm", style: .accent, size: .small)
+            DSChip("center", style: .accent, size: .small)
+            Spacer(minLength: 0)
+          }
+          DSDivider(insets: EdgeInsets())
+          DSText("DSScrollStack — LazyVStack feed", style: .captionStrong, color: DSColor.Text.secondary)
+          DSText(
+            "Lazy instantiation with no cell reuse. Use for custom feeds up to ~100 items.",
+            style: .caption,
+            color: DSColor.Text.tertiary
+          )
+          DSText("DSLayoutSurface — screen container", style: .captionStrong, color: DSColor.Text.secondary)
+          DSText(
+            "Wraps a screen with background, safe-area, padding, and optional pull-to-refresh. Modes: .fixed · .scrollable · .lazyScrollable",
+            style: .caption,
+            color: DSColor.Text.tertiary
+          )
+        }
+      }
+    }
+  }
+}
+
+private struct AdvancedInputGallery: View {
+  @State private var otp: String = ""
+  @State private var tags: [String] = ["swiftui", "design"]
+  @State private var date: Date = Date()
+
+  var body: some View {
+    VStack(alignment: .leading, spacing: DSSpacing.sm) {
+      SectionTitle(title: "Advanced inputs")
+      DSCard {
+        VStack(alignment: .leading, spacing: DSSpacing.md) {
+          VStack(alignment: .leading, spacing: DSSpacing.xs) {
+            DSText("Verification code", style: .captionStrong, color: DSColor.Text.secondary)
+            DSOTPInput(length: 6, code: self.$otp)
+          }
+          VStack(alignment: .leading, spacing: DSSpacing.xs) {
+            DSText("Tags", style: .captionStrong, color: DSColor.Text.secondary)
+            DSTagInput("Add a tag", tags: self.$tags)
+          }
+          DSDatePicker("Meeting date", date: self.$date, mode: .dateAndTime)
+        }
+      }
+    }
+  }
+}
+
+private struct FormFieldGallery: View {
+  @State private var username: String = ""
+
+  var body: some View {
+    VStack(alignment: .leading, spacing: DSSpacing.sm) {
+      SectionTitle(title: "Form fields")
+      DSCard {
+        VStack(alignment: .leading, spacing: DSSpacing.lg) {
+          DSFormField(
+            "Username",
+            helperText: "Letters, numbers, and underscores only.",
+            isRequired: true
+          ) {
+            DSTextField("handle", text: self.$username, leadingIcon: .at)
+          }
+          DSFormField(
+            "Bio",
+            errorText: "Bio can't exceed 160 characters.",
+            trailingAccessory: {
+              DSText("0/160", style: .caption, color: DSColor.Text.tertiary)
+            }
+          ) {
+            DSTextField("Tell people about yourself", text: .constant(""))
+          }
+        }
+      }
+    }
+  }
+}
+
+private struct LayoutGallery: View {
+  @State private var expanded: Bool = true
+  private let filterChips: [String] = [
+    "On-device", "Parakeet", "English", "Low-latency",
+    "Punctuation", "Custom vocab", "Streaming", "Offline"
+  ]
+
+  var body: some View {
+    VStack(alignment: .leading, spacing: DSSpacing.sm) {
+      SectionTitle(title: "Layout")
+      DSCard {
+        VStack(alignment: .leading, spacing: DSSpacing.md) {
+          DSText("Flow layout (wraps)", style: .captionStrong, color: DSColor.Text.secondary)
+          DSFlowLayout {
+            ForEach(self.filterChips, id: \.self) { label in
+              DSChip(label, style: .accent, size: .small)
+            }
+          }
+          DSDivider(insets: EdgeInsets())
+          DSText("Disclosure / accordion", style: .captionStrong, color: DSColor.Text.secondary)
+          DSDisclosure(
+            "Voice typing advanced",
+            subtitle: "Customise model + language",
+            icon: .waveform,
+            isExpanded: self.$expanded
+          ) {
+            VStack(alignment: .leading, spacing: DSSpacing.xs) {
+              DSKeyValueRow("Model", value: "Parakeet TDT 0.6B", icon: .brain)
+              DSKeyValueRow("Language", value: "English", icon: .globe)
+              DSKeyValueRow("Latency", value: "~120ms", icon: .lightning, copyable: true)
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+private struct DisplayGallery: View {
+  var body: some View {
+    VStack(alignment: .leading, spacing: DSSpacing.sm) {
+      SectionTitle(title: "Display")
+      DSCard {
+        VStack(alignment: .leading, spacing: DSSpacing.md) {
+          HStack(spacing: DSSpacing.sm) {
+            DSStatCard(
+              title: "Daily words",
+              value: "1,284",
+              subtitle: "vs yesterday",
+              icon: .chartLineUp,
+              trend: .up("+12%")
+            )
+            DSStatCard(
+              title: "Voice minutes",
+              value: "32m",
+              subtitle: "today",
+              icon: .waveform,
+              tint: DSColor.Accent.secondary,
+              trend: .down("-4%")
+            )
+          }
+          DSLink("Read the privacy policy", icon: .shieldCheck, trailingIcon: .arrowUpRight)
+          DSDivider(insets: EdgeInsets())
+          DSText("Images", style: .captionStrong, color: DSColor.Text.secondary)
+          HStack(spacing: DSSpacing.sm) {
+            DSImage(.icon(.waveform, .fill), aspect: .square, cornerRadius: DSRadius.sm)
+              .frame(width: 76, height: 76)
+            DSImage(.icon(.brain, .fill), aspect: .square, cornerRadius: DSRadius.sm)
+              .frame(width: 76, height: 76)
+            DSImage(.icon(.microphone, .fill), aspect: .square, cornerRadius: DSRadius.sm)
+              .frame(width: 76, height: 76)
+            DSImage(.url(nil), aspect: .square, cornerRadius: DSRadius.sm, placeholderText: "No image")
+              .frame(width: 76, height: 76)
+          }
+          DSDivider(insets: EdgeInsets())
+          DSText("Timeline", style: .captionStrong, color: DSColor.Text.secondary)
+          DSTimeline(events: [
+            DSTimelineEvent(title: "Model downloaded", subtitle: "Parakeet 0.6B", timestamp: "09:32", icon: .download, tint: DSColor.Status.success),
+            DSTimelineEvent(title: "First transcription", timestamp: "09:41", icon: .sparkle),
+            DSTimelineEvent(title: "Custom vocabulary synced", timestamp: "10:02", icon: .bookmark, tint: DSColor.Accent.secondary)
+          ])
+        }
+      }
+    }
+  }
+}
+
+private struct OverlaysGallery: View {
+  @State private var alertShown = false
+  @State private var sheetShown = false
+  @State private var actionSheetShown = false
+  @State private var popoverShown = false
+  private let steps: [DSStep] = [
+    DSStep(id: 0, title: "Welcome"),
+    DSStep(id: 1, title: "Enable"),
+    DSStep(id: 2, title: "Model"),
+    DSStep(id: 3, title: "Done")
+  ]
+
+  var body: some View {
+    VStack(alignment: .leading, spacing: DSSpacing.sm) {
+      SectionTitle(title: "Overlays & flows")
+      DSCard {
+        VStack(alignment: .leading, spacing: DSSpacing.md) {
+          DSStepIndicator(steps: self.steps, currentStep: 2)
+          DSBanner(
+            "Storage almost full",
+            message: "Free up space before downloading another model.",
+            kind: .warning,
+            primaryAction: (label: "Manage", handler: {}),
+            onDismiss: {}
+          )
+          HStack(spacing: DSSpacing.xs) {
+            DSButton("Show alert", variant: .secondary, size: .small) {
+              self.alertShown = true
+            }
+            DSButton("Bottom sheet", variant: .secondary, size: .small) {
+              self.sheetShown = true
+            }
+            DSButton("Action sheet", variant: .secondary, size: .small) {
+              self.actionSheetShown = true
+            }
+          }
+          DSText("Popover / Tooltip", style: .captionStrong, color: DSColor.Text.secondary)
+          DSButton("Show popover", variant: .tertiary, size: .small, action: { self.popoverShown.toggle() })
+            .dsPopover(isPresented: self.$popoverShown, direction: .bottom) {
+              DSTooltip("On-device · No internet required")
+            }
+          DSDivider(insets: EdgeInsets())
+          DSMenu(items: [
+            DSMenuItem("Edit", icon: DSIcon.UI.edit, shortcut: "⌘E") {},
+            DSMenuItem("Duplicate", icon: DSIcon.UI.copy) {},
+            DSMenuItem("Share", icon: DSIcon.UI.share) {},
+            DSMenuItem("Delete", icon: DSIcon.UI.trash, role: .destructive) {}
+          ]) {
+            DSButton("Open menu", icon: DSIcon.UI.more, variant: .tertiary, size: .small, action: {})
+          }
+        }
+      }
+    }
+    .dsAlert(
+      "Delete keyboard?",
+      message: "Your custom vocabulary will also be removed.",
+      kind: .warning,
+      isPresented: self.$alertShown,
+      actions: [
+        DSAlertAction.destructive("Delete", handler: {}),
+        DSAlertAction.cancel()
+      ]
+    )
+    .dsBottomSheet(
+      title: "Choose a model",
+      detent: .medium,
+      showsDismissButton: true,
+      isPresented: self.$sheetShown
+    ) {
+      VStack(alignment: .leading, spacing: DSSpacing.sm) {
+        DSListRow("Parakeet TDT 0.6B", subtitle: "Fastest, on-device", icon: .brain, action: {})
+        DSListRow("Parakeet TDT 1.1B", subtitle: "Balanced", icon: .brain, action: {})
+        DSListRow("Whisper Tiny", subtitle: "Legacy fallback", icon: .brain, action: {})
+      }
+    }
+    .dsActionSheet(
+      title: "Edit entry",
+      items: [
+        DSActionSheetItem("Edit", icon: DSIcon.UI.edit, handler: {}),
+        DSActionSheetItem("Duplicate", icon: DSIcon.UI.copy, handler: {}),
+        DSActionSheetItem("Delete", icon: DSIcon.UI.trash, role: .destructive, handler: {})
+      ],
+      isPresented: self.$actionSheetShown
+    )
   }
 }

@@ -23,4 +23,24 @@ public enum DSMotion {
   public static let shimmer = Animation.linear(duration: 1.4).repeatForever(autoreverses: false)
   public static let spin = Animation.linear(duration: 1.1).repeatForever(autoreverses: false)
   public static let spinSlow = Animation.linear(duration: 2.4).repeatForever(autoreverses: false)
+
+  public static func respecting(_ animation: Animation, reduceMotion: Bool) -> Animation? {
+    reduceMotion ? nil : animation
+  }
+}
+
+public extension View {
+  func dsAnimation<V: Equatable>(_ animation: Animation, value: V) -> some View {
+    self.modifier(DSRespectfulAnimation(animation: animation, value: value))
+  }
+}
+
+private struct DSRespectfulAnimation<V: Equatable>: ViewModifier {
+  let animation: Animation
+  let value: V
+  @Environment(\.accessibilityReduceMotion) private var reduceMotion: Bool
+
+  func body(content: Content) -> some View {
+    content.animation(self.reduceMotion ? nil : self.animation, value: self.value)
+  }
 }
