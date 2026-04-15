@@ -118,13 +118,11 @@ try fm.createDirectory(at: regularGroupURL, withIntermediateDirectories: true)
 try fm.createDirectory(at: fillGroupURL, withIntermediateDirectories: true)
 
 try writeJSON([
-  "info": ["version": 1, "author": "generate-icons.swift"],
-  "properties": ["provides-namespace": true]
+  "info": ["version": 1, "author": "generate-icons.swift"]
 ], to: regularGroupURL.appendingPathComponent("Contents.json"))
 
 try writeJSON([
-  "info": ["version": 1, "author": "generate-icons.swift"],
-  "properties": ["provides-namespace": true]
+  "info": ["version": 1, "author": "generate-icons.swift"]
 ], to: fillGroupURL.appendingPathComponent("Contents.json"))
 
 var written = 0

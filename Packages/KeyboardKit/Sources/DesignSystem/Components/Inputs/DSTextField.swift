@@ -200,7 +200,7 @@ public struct DSTextField: View {
   }
 
   private var resolvedState: DSFieldState {
-    if let validation = self.validation {
+    if self.validation != nil {
       switch self.validationResult {
         case .valid:
           return self.externalState
@@ -209,7 +209,6 @@ public struct DSTextField: View {
         case .warning:
           return .warning
       }
-      _ = validation
     }
     return self.externalState
   }

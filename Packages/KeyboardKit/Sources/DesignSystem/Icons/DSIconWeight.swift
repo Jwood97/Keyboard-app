@@ -18,8 +18,8 @@ public struct DSIconWeightSet: OptionSet, Sendable, Hashable {
 
   public func contains(_ weight: DSIconWeight) -> Bool {
     switch weight {
-      case .regular: return self.contains(.regular)
-      case .fill: return self.contains(.fill)
+      case .regular: return (self.rawValue & DSIconWeightSet.regular.rawValue) != 0
+      case .fill: return (self.rawValue & DSIconWeightSet.fill.rawValue) != 0
     }
   }
 }
