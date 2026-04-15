@@ -48,7 +48,7 @@ packages:
     path: Packages/KeyboardKit
 
 fileGroups:
-  - Packages/KeyboardKit
+  - Packages
   - Scripts
   - project.yml
   - README.md
@@ -68,11 +68,9 @@ targets:
       - target: KeyboardExtension
         embed: true
       - package: KeyboardKit
-        product: DesignSystem
-      - package: KeyboardKit
         product: AppFeature
       - package: KeyboardKit
-        product: KeyboardUI
+        product: DesignSystem
     info:
       path: App/Info.plist
       properties:
