@@ -2,6 +2,7 @@ import SwiftUI
 
 public enum DSChipStyle: Sendable {
   case neutral
+  case soft
   case accent
   case success
   case warning
@@ -82,6 +83,8 @@ public struct DSChip: View {
     switch self.style {
       case .neutral:
         return DSColor.Background.raised
+      case .soft:
+        return DSColor.Background.surface
       case .accent:
         return DSColor.Accent.primarySoft
       case .success:
@@ -99,6 +102,8 @@ public struct DSChip: View {
     switch self.style {
       case .neutral:
         return DSColor.Text.secondary
+      case .soft:
+        return DSColor.Text.tertiary
       case .accent:
         return DSColor.Accent.primary
       case .success:
@@ -116,7 +121,7 @@ public struct DSChip: View {
     switch self.style {
       case .neutral:
         return DSColor.Border.subtle
-      default:
+      case .soft, .accent, .success, .warning, .danger, .info:
         return .clear
     }
   }
@@ -125,7 +130,7 @@ public struct DSChip: View {
     switch self.style {
       case .neutral:
         return 1
-      default:
+      case .soft, .accent, .success, .warning, .danger, .info:
         return 0
     }
   }
