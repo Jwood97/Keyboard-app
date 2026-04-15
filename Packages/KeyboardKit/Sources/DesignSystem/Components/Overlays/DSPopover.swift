@@ -7,11 +7,11 @@ public enum DSPopoverDirection: Sendable {
   case trailing
 }
 
-public struct DSPopover<Content: View>: ViewModifier {
+public struct DSPopover<PopoverContent: View>: ViewModifier {
   @Binding var isPresented: Bool
   let direction: DSPopoverDirection
   let arrowSize: CGFloat
-  let popoverContent: () -> Content
+  let popoverContent: () -> PopoverContent
 
   public func body(content: Content) -> some View {
     content.overlay(alignment: self.alignment) {
@@ -124,10 +124,10 @@ public struct DSTooltip: View {
 }
 
 public extension View {
-  func dsPopover<Content: View>(
+  func dsPopover<PopoverContent: View>(
     isPresented: Binding<Bool>,
     direction: DSPopoverDirection = .bottom,
-    @ViewBuilder content: @escaping () -> Content
+    @ViewBuilder content: @escaping () -> PopoverContent
   ) -> some View {
     self.modifier(DSPopover(
       isPresented: isPresented,
