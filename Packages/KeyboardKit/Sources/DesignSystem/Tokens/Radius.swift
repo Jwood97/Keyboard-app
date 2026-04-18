@@ -1,0 +1,16 @@
+import CoreGraphics
+
+public enum DSRadius {
+  public static let none: CGFloat = 0
+  public static let xs: CGFloat = 4
+  public static let sm: CGFloat = 8
+  public static let md: CGFloat = 12
+  public static let lg: CGFloat = 16
+  public static let xl: CGFloat = 20
+  public static let xxl: CGFloat = 28
+  public static let card: CGFloat = 20
+  public static let sheet: CGFloat = 32
+  public static let field: CGFloat = 14
+  public static let key: CGFloat = 10
+  public static let pill: CGFloat = 9999
+}
