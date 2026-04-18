@@ -30,7 +30,14 @@ public struct DSInlineMessage: View {
 
   public var body: some View {
     HStack(alignment: .top, spacing: DSSpacing.sm) {
-      DSIconView(self.icon, weight: .fill, size: 20, tint: self.tint)
+      DSIconBadge(
+        self.icon,
+        weight: .fill,
+        size: .small,
+        tint: self.tint,
+        surface: self.tint.opacity(0.11),
+        border: self.tint.opacity(0.16)
+      )
       VStack(alignment: .leading, spacing: 4) {
         DSText(self.title, style: .bodyStrong)
         if let description = self.description {
@@ -57,12 +64,19 @@ public struct DSInlineMessage: View {
     .padding(DSSpacing.md)
     .background(
       RoundedRectangle(cornerRadius: DSRadius.md, style: .continuous)
-        .fill(self.surface)
+        .fill(DSColor.Background.surface)
     )
     .overlay(
       RoundedRectangle(cornerRadius: DSRadius.md, style: .continuous)
-        .strokeBorder(self.tint.opacity(0.25), lineWidth: 1)
+        .strokeBorder(DSColor.Border.subtle, lineWidth: 1)
     )
+		.overlay(alignment: .leading) {
+			RoundedRectangle(cornerRadius: DSRadius.xs, style: .continuous)
+				.fill(self.tint)
+				.frame(width: 3)
+				.padding(.vertical, 1)
+				.padding(.leading, 1)
+		}
   }
 
   private var icon: DSIcon {
@@ -88,19 +102,6 @@ public struct DSInlineMessage: View {
         return DSColor.Status.warning
       case .error:
         return DSColor.Status.danger
-    }
-  }
-
-  private var surface: Color {
-    switch self.kind {
-      case .info:
-        return DSColor.Status.infoSurface
-      case .success:
-        return DSColor.Status.successSurface
-      case .warning:
-        return DSColor.Status.warningSurface
-      case .error:
-        return DSColor.Status.dangerSurface
     }
   }
 }

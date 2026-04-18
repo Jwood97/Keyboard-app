@@ -22,18 +22,13 @@ public struct DSEmptyState: View {
   }
 
   public var body: some View {
-    VStack(spacing: DSSpacing.md) {
-      ZStack {
-        Circle()
-          .fill(DSColor.Accent.primarySoft)
-          .frame(width: 88, height: 88)
-        DSIconView(self.icon, weight: .fill, size: 40, tint: DSColor.Accent.primary)
-      }
+    VStack(spacing: DSSpacing.lg) {
+      DSIconBadge(self.icon, weight: .fill, style: .accent, size: .extraLarge)
       VStack(spacing: DSSpacing.xs) {
-        DSText(self.title, style: .title, alignment: .center)
+        DSText(self.title, style: .titleSmall, alignment: .center)
         if let message = self.message {
           DSText(message, style: .body, color: DSColor.Text.secondary, alignment: .center)
-            .padding(.horizontal, DSSpacing.lg)
+            .frame(maxWidth: 320)
         }
       }
       if self.primaryAction != nil || self.secondaryAction != nil {
@@ -45,11 +40,10 @@ public struct DSEmptyState: View {
             DSButton(secondary.label, variant: .ghost, size: .medium, fullWidth: true, action: secondary.handler)
           }
         }
-        .padding(.horizontal, DSSpacing.xl)
-        .padding(.top, DSSpacing.sm)
+        .frame(maxWidth: 280)
       }
     }
-    .padding(DSSpacing.lg)
+    .padding(DSSpacing.xl)
     .frame(maxWidth: .infinity)
   }
 }

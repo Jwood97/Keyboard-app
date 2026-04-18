@@ -82,11 +82,11 @@ public struct DSChip: View {
   private var background: Color {
     switch self.style {
       case .neutral:
-        return DSColor.Background.raised
-      case .soft:
         return DSColor.Background.surface
+      case .soft:
+        return DSColor.Background.muted
       case .accent:
-        return DSColor.Accent.primarySoft
+        return DSColor.Accent.primarySoft.opacity(0.72)
       case .success:
         return DSColor.Status.successSurface
       case .warning:
@@ -103,7 +103,7 @@ public struct DSChip: View {
       case .neutral:
         return DSColor.Text.secondary
       case .soft:
-        return DSColor.Text.tertiary
+        return DSColor.Text.secondary
       case .accent:
         return DSColor.Accent.primary
       case .success:
@@ -121,17 +121,25 @@ public struct DSChip: View {
     switch self.style {
       case .neutral:
         return DSColor.Border.subtle
-      case .soft, .accent, .success, .warning, .danger, .info:
-        return .clear
+      case .soft:
+        return DSColor.Border.subtle.opacity(0.78)
+      case .accent:
+        return DSColor.Accent.primary.opacity(0.16)
+      case .success:
+        return DSColor.Status.success.opacity(0.16)
+      case .warning:
+        return DSColor.Status.warning.opacity(0.18)
+      case .danger:
+        return DSColor.Status.danger.opacity(0.18)
+      case .info:
+        return DSColor.Status.info.opacity(0.18)
     }
   }
 
   private var borderWidth: CGFloat {
     switch self.style {
-      case .neutral:
+      case .neutral, .soft, .accent, .success, .warning, .danger, .info:
         return 1
-      case .soft, .accent, .success, .warning, .danger, .info:
-        return 0
     }
   }
 

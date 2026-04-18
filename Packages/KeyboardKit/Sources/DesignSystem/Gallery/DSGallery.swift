@@ -1,44 +1,223 @@
 import SwiftUI
 
 public struct DSGallery: View {
+  @State private var filter: GalleryFilter = .core
+  private let topAnchor = "gallery-top"
+
   public init() {}
+
+  private var visibleSections: [GallerySection] {
+    GallerySection.allCases.filter { $0.filter == self.filter }
+  }
 
   public var body: some View {
     NavigationStack {
-      ScrollView {
-        VStack(alignment: .leading, spacing: DSSpacing.xl) {
-          ColorGallery()
-          TypographyGallery()
-          IconGallery()
-          ButtonGallery()
-          InputGallery()
-          AdvancedInputGallery()
-          FormFieldGallery()
-          ContainerGallery()
-          LayoutGallery()
-          ListSurfaceGallery()
-          DisplayGallery()
-          FeedbackGallery()
-          SpinnerGallery()
-          OverlaysGallery()
-          NavigationGallery()
+      ScrollViewReader { proxy in
+        ScrollView {
+          LazyVStack(alignment: .leading, spacing: DSSpacing.xl) {
+            Color.clear
+              .frame(height: 1)
+              .id(self.topAnchor)
+            GallerySummary(filter: self.filter, sectionCount: self.visibleSections.count)
+            ForEach(self.visibleSections) { section in
+              self.sectionView(section)
+            }
+          }
+          .padding(DSSpacing.md)
+          .padding(.bottom, DSSpacing.xxxl)
         }
-        .padding(DSSpacing.md)
-        .padding(.bottom, DSSpacing.xxl)
+        .scrollIndicators(.hidden)
+        .background(DSColor.Background.canvas.ignoresSafeArea())
+        .safeAreaInset(edge: .top, spacing: 0) {
+          self.filterBar
+        }
+        .onChange(of: self.filter) { _, _ in
+          withAnimation(DSMotion.refined) {
+            proxy.scrollTo(self.topAnchor, anchor: .top)
+          }
+        }
       }
       .navigationTitle("Design System")
       .navigationBarTitleDisplayMode(.large)
-      .background(DSColor.Background.canvas.ignoresSafeArea())
     }
+  }
+
+  @ViewBuilder
+  private func sectionView(_ section: GallerySection) -> some View {
+    switch section {
+      case .colors:
+        ColorGallery()
+      case .typography:
+        TypographyGallery()
+      case .icons:
+        IconGallery()
+      case .buttons:
+        ButtonGallery()
+      case .containers:
+        ContainerGallery()
+      case .layout:
+        LayoutGallery()
+      case .display:
+        DisplayGallery()
+      case .inputs:
+        InputGallery()
+      case .advancedInputs:
+        AdvancedInputGallery()
+      case .formFields:
+        FormFieldGallery()
+      case .feedback:
+        FeedbackGallery()
+      case .spinners:
+        SpinnerGallery()
+      case .overlays:
+        OverlaysGallery()
+      case .navigation:
+        NavigationGallery()
+    }
+  }
+
+  private var filterBar: some View {
+    VStack(spacing: 0) {
+      DSSegmentedControl(
+        options: GalleryFilter.allCases.map { .init(id: $0, title: $0.segmentTitle) },
+        selection: self.$filter
+      )
+      .padding(.horizontal, DSSpacing.md)
+      .padding(.vertical, DSSpacing.sm)
+
+      Rectangle()
+        .fill(DSColor.Border.subtle)
+        .frame(height: 1)
+    }
+    .background(DSColor.Background.canvas.opacity(0.98))
   }
 }
 
 private struct SectionTitle: View {
   let title: String
+  let subtitle: String?
+
+  init(title: String, subtitle: String? = nil) {
+    self.title = title
+    self.subtitle = subtitle
+  }
 
   var body: some View {
-    DSText(title, style: .overline, color: DSColor.Text.secondary)
-      .padding(.horizontal, DSSpacing.xxs)
+    VStack(alignment: .leading, spacing: 2) {
+      DSText(self.title, style: .titleSmall)
+      if let subtitle = self.subtitle {
+        DSText(subtitle, style: .caption, color: DSColor.Text.secondary)
+      }
+    }
+    .padding(.horizontal, DSSpacing.xxs)
+  }
+}
+
+private enum GalleryFilter: String, CaseIterable, Hashable, Identifiable {
+  case core
+  case inputs
+  case feedback
+  case navigation
+
+  var id: String { self.rawValue }
+
+  var title: String {
+    switch self {
+      case .core:
+        return "Core"
+      case .inputs:
+        return "Inputs"
+      case .feedback:
+        return "Feedback"
+      case .navigation:
+        return "Navigation"
+    }
+  }
+
+  var segmentTitle: String {
+    switch self {
+      case .navigation:
+        return "Nav"
+      default:
+        return self.title
+    }
+  }
+
+  var subtitle: String {
+    switch self {
+      case .core:
+        return "Foundations, layout, and display patterns."
+      case .inputs:
+        return "Forms, editing, and selection controls."
+      case .feedback:
+        return "Status, progress, empty states, and overlays."
+      case .navigation:
+        return "Movement, tabs, breadcrumbs, and page structure."
+    }
+  }
+
+  var icon: DSIcon {
+    switch self {
+      case .core:
+        return .sparkle
+      case .inputs:
+        return .waveform
+      case .feedback:
+        return .bell
+      case .navigation:
+        return .compass
+    }
+  }
+}
+
+private enum GallerySection: String, CaseIterable, Identifiable {
+  case colors
+  case typography
+  case icons
+  case buttons
+  case containers
+  case layout
+  case display
+  case inputs
+  case advancedInputs
+  case formFields
+  case feedback
+  case spinners
+  case overlays
+  case navigation
+
+  var id: String { self.rawValue }
+
+  var filter: GalleryFilter {
+    switch self {
+      case .colors, .typography, .icons, .buttons, .containers, .layout, .display:
+        return .core
+      case .inputs, .advancedInputs, .formFields:
+        return .inputs
+      case .feedback, .spinners, .overlays:
+        return .feedback
+      case .navigation:
+        return .navigation
+    }
+  }
+}
+
+private struct GallerySummary: View {
+  let filter: GalleryFilter
+  let sectionCount: Int
+
+  var body: some View {
+    DSCard(style: .plain, padding: DSSpacing.lg, radius: DSRadius.lg) {
+      HStack(alignment: .top, spacing: DSSpacing.md) {
+        DSIconBadge(self.filter.icon, style: .accent, size: .medium)
+        VStack(alignment: .leading, spacing: 4) {
+          DSText(self.filter.title, style: .titleSmall)
+          DSText(self.filter.subtitle, style: .footnote, color: DSColor.Text.secondary)
+        }
+        Spacer(minLength: DSSpacing.sm)
+        DSText("\(self.sectionCount) sections", style: .caption, color: DSColor.Text.tertiary)
+      }
+    }
   }
 }
 
@@ -156,12 +335,14 @@ private struct TypographyGallery: View {
 }
 
 private struct SpinnerGallery: View {
+  private let columns = [GridItem(.adaptive(minimum: 88), spacing: DSSpacing.md)]
+
   var body: some View {
     VStack(alignment: .leading, spacing: DSSpacing.sm) {
       SectionTitle(title: "Spinners")
       DSCard {
         VStack(alignment: .leading, spacing: DSSpacing.md) {
-          HStack(spacing: DSSpacing.lg) {
+          LazyVGrid(columns: self.columns, alignment: .leading, spacing: DSSpacing.md) {
             self.spinner(label: "Gradient", style: .gradient)
             self.spinner(label: "Arc", style: .arc)
             self.spinner(label: "Dual ring", style: .dualRing)
@@ -169,7 +350,7 @@ private struct SpinnerGallery: View {
             self.spinner(label: "Dots", style: .dots)
           }
           DSText("DSSpinner ships in 5 variants and 4 sizes.", style: .caption, color: DSColor.Text.tertiary)
-          HStack(spacing: DSSpacing.lg) {
+          LazyVGrid(columns: self.columns, alignment: .leading, spacing: DSSpacing.md) {
             VStack(spacing: 6) {
               DSSpinner(style: .gradient, size: .small)
               DSText("S", style: .caption, color: DSColor.Text.tertiary)
@@ -226,20 +407,24 @@ private struct IconGallery: View {
   }
 
   private func grid(weight: DSIconWeight) -> some View {
-    let columns = Array(repeating: GridItem(.flexible(), spacing: DSSpacing.sm), count: 5)
+    let columns = [GridItem(.adaptive(minimum: 76, maximum: 100), spacing: DSSpacing.sm)]
     return LazyVGrid(columns: columns, spacing: DSSpacing.sm) {
       ForEach(self.preview) { icon in
-        VStack(spacing: 4) {
-          DSIconView(icon, weight: weight, size: 26, tint: DSColor.Accent.primary)
-            .frame(height: 32)
+        VStack(spacing: DSSpacing.xs) {
+          DSIconBadge(icon, weight: weight, style: .neutral, size: .medium, tint: DSColor.Accent.primary)
           DSText(icon.rawName, style: .caption, color: DSColor.Text.tertiary, alignment: .center)
-            .lineLimit(1)
+            .lineLimit(2)
+            .frame(height: 28, alignment: .top)
         }
         .frame(maxWidth: .infinity)
-        .padding(.vertical, DSSpacing.xs)
+        .padding(DSSpacing.sm)
         .background(
-          RoundedRectangle(cornerRadius: DSRadius.sm, style: .continuous)
-            .fill(DSColor.Background.raised)
+          RoundedRectangle(cornerRadius: DSRadius.md, style: .continuous)
+            .fill(DSColor.Background.surface)
+        )
+        .overlay(
+          RoundedRectangle(cornerRadius: DSRadius.md, style: .continuous)
+            .strokeBorder(DSColor.Border.subtle, lineWidth: 1)
         )
       }
     }
@@ -365,12 +550,26 @@ private struct InputGallery: View {
 }
 
 private struct ContainerGallery: View {
+  private struct ModelItem: Identifiable {
+    let id = UUID()
+    let title: String
+    let subtitle: String
+    let icon: DSIcon
+  }
+
+  private let models: [ModelItem] = [
+    ModelItem(title: "Parakeet TDT 0.6B", subtitle: "140 MB · On-device", icon: .brain),
+    ModelItem(title: "Parakeet TDT 1.1B", subtitle: "250 MB · On-device", icon: .brain),
+    ModelItem(title: "Whisper Tiny", subtitle: "38 MB · Legacy", icon: .waveform),
+    ModelItem(title: "Custom model", subtitle: "Not installed", icon: .plus)
+  ]
+
   var body: some View {
     VStack(alignment: .leading, spacing: DSSpacing.sm) {
       SectionTitle(title: "Cards & Lists")
       DSCard(style: .elevated, action: {}) {
         HStack(spacing: DSSpacing.md) {
-          DSAvatar(.icon(.leaf, weight: .fill), size: .lg)
+          DSIconBadge(.leaf, weight: .fill, style: .accent, size: .large)
           VStack(alignment: .leading, spacing: 4) {
             DSText("Matcha Blend", style: .titleSmall)
             DSText("On-device. Warm, calm, and clean.", style: .footnote, color: DSColor.Text.secondary)
@@ -407,6 +606,18 @@ private struct ContainerGallery: View {
           destructive: true,
           action: {}
         )
+      }
+      DSSection("DSList", footer: "Backed by UICollectionView. Best for 20+ items, swipe-to-delete, and reordering.") {
+        ForEach(self.models) { item in
+          DSListRow(
+            item.title,
+            subtitle: item.subtitle,
+            icon: item.icon,
+            accessory: .chevron,
+            action: {}
+          )
+          DSDivider()
+        }
       }
     }
   }
@@ -510,90 +721,6 @@ private struct NavigationGallery: View {
   }
 }
 
-private struct ListSurfaceGallery: View {
-  private struct ModelItem: Identifiable {
-    let id = UUID()
-    let title: String
-    let subtitle: String
-    let icon: DSIcon
-  }
-
-  private let models: [ModelItem] = [
-    ModelItem(title: "Parakeet TDT 0.6B", subtitle: "140 MB · On-device", icon: .brain),
-    ModelItem(title: "Parakeet TDT 1.1B", subtitle: "250 MB · On-device", icon: .brain),
-    ModelItem(title: "Whisper Tiny", subtitle: "38 MB · Legacy", icon: .waveform),
-    ModelItem(title: "Custom model", subtitle: "Not installed", icon: .plus)
-  ]
-
-  var body: some View {
-    VStack(alignment: .leading, spacing: DSSpacing.sm) {
-      SectionTitle(title: "Lists & Surfaces")
-      DSCard {
-        VStack(alignment: .leading, spacing: DSSpacing.xs) {
-          DSText("DSList — native UICollectionView", style: .captionStrong, color: DSColor.Text.secondary)
-          DSText(
-            "Best for 20+ items, swipe-to-delete, reordering, pull-to-refresh.",
-            style: .caption,
-            color: DSColor.Text.tertiary
-          )
-        }
-      }
-      DSList {
-        ForEach(self.models) { item in
-          DSListRow(
-            item.title,
-            subtitle: item.subtitle,
-            icon: item.icon,
-            accessory: .chevron,
-            action: {}
-          )
-          DSDivider()
-        }
-      }
-      .frame(height: 56 * CGFloat(self.models.count))
-      .clipShape(RoundedRectangle(cornerRadius: DSRadius.lg, style: .continuous))
-      .overlay(
-        RoundedRectangle(cornerRadius: DSRadius.lg, style: .continuous)
-          .strokeBorder(DSColor.Border.subtle, lineWidth: 1)
-      )
-      DSCard {
-        VStack(alignment: .leading, spacing: DSSpacing.md) {
-          DSText("Layout stacks", style: .captionStrong, color: DSColor.Text.secondary)
-          DSText(
-            "DSVStack (leading / .md) · DSHStack (center / .sm) — encode DS defaults.",
-            style: .caption,
-            color: DSColor.Text.tertiary
-          )
-          DSVStack {
-            DSChip("DSVStack — leading", style: .soft, size: .small)
-            DSChip("spacing: DSSpacing.md", style: .soft, size: .small)
-            DSChip("alignment: .leading", style: .soft, size: .small)
-          }
-          DSHStack {
-            DSChip("DSHStack", style: .accent, size: .small)
-            DSChip("spacing .sm", style: .accent, size: .small)
-            DSChip("center", style: .accent, size: .small)
-            Spacer(minLength: 0)
-          }
-          DSDivider(insets: EdgeInsets())
-          DSText("DSScrollStack — LazyVStack feed", style: .captionStrong, color: DSColor.Text.secondary)
-          DSText(
-            "Lazy instantiation with no cell reuse. Use for custom feeds up to ~100 items.",
-            style: .caption,
-            color: DSColor.Text.tertiary
-          )
-          DSText("DSLayoutSurface — screen container", style: .captionStrong, color: DSColor.Text.secondary)
-          DSText(
-            "Wraps a screen with background, safe-area, padding, and optional pull-to-refresh. Modes: .fixed · .scrollable · .lazyScrollable",
-            style: .caption,
-            color: DSColor.Text.tertiary
-          )
-        }
-      }
-    }
-  }
-}
-
 private struct AdvancedInputGallery: View {
   @State private var otp: String = ""
   @State private var tags: [String] = ["swiftui", "design"]
@@ -680,6 +807,19 @@ private struct LayoutGallery: View {
               DSKeyValueRow("Language", value: "English", icon: .globe)
               DSKeyValueRow("Latency", value: "~120ms", icon: .lightning, copyable: true)
             }
+          }
+          DSDivider(insets: EdgeInsets())
+          DSText("Stacks", style: .captionStrong, color: DSColor.Text.secondary)
+          DSVStack {
+            DSChip("DSVStack — leading", style: .soft, size: .small)
+            DSChip("spacing: DSSpacing.md", style: .soft, size: .small)
+            DSChip("alignment: .leading", style: .soft, size: .small)
+          }
+          DSHStack {
+            DSChip("DSHStack", style: .accent, size: .small)
+            DSChip("spacing .sm", style: .accent, size: .small)
+            DSChip("center", style: .accent, size: .small)
+            Spacer(minLength: 0)
           }
         }
       }

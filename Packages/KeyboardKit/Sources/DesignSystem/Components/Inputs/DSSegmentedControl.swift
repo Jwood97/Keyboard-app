@@ -24,7 +24,7 @@ public struct DSSegmentedControl<Value: Hashable>: View {
   }
 
   public var body: some View {
-    HStack(spacing: 4) {
+    HStack(spacing: 6) {
       ForEach(self.options) { option in
         Button {
           DSHaptics.selection()
@@ -49,10 +49,15 @@ public struct DSSegmentedControl<Value: Hashable>: View {
           }
           .frame(maxWidth: .infinity)
           .padding(.vertical, 10)
+          .padding(.horizontal, DSSpacing.xs)
           .background {
             if self.selection == option.id {
-              RoundedRectangle(cornerRadius: DSRadius.sm, style: .continuous)
+              RoundedRectangle(cornerRadius: DSRadius.md, style: .continuous)
                 .fill(DSColor.Background.surface)
+                .overlay(
+                  RoundedRectangle(cornerRadius: DSRadius.md, style: .continuous)
+                    .strokeBorder(DSColor.Border.subtle, lineWidth: 1)
+                )
                 .dsShadow(DSElevation.xs)
                 .matchedGeometryEffect(id: "segment", in: self.namespace)
             }
@@ -66,8 +71,12 @@ public struct DSSegmentedControl<Value: Hashable>: View {
     }
     .padding(4)
     .background(
-      RoundedRectangle(cornerRadius: DSRadius.sm + 4, style: .continuous)
-        .fill(DSColor.Background.raised)
+      RoundedRectangle(cornerRadius: DSRadius.md + 2, style: .continuous)
+        .fill(DSColor.Background.muted)
+    )
+    .overlay(
+      RoundedRectangle(cornerRadius: DSRadius.md + 2, style: .continuous)
+        .strokeBorder(DSColor.Border.subtle.opacity(0.82), lineWidth: 1)
     )
     .opacity(self.isEnabled ? 1 : 0.5)
     .disabled(!self.isEnabled)

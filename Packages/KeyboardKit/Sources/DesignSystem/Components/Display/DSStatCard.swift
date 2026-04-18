@@ -38,29 +38,28 @@ public struct DSStatCard: View {
   }
 
   public var body: some View {
-    DSCard(style: .bordered, padding: DSSpacing.md) {
-      VStack(alignment: .leading, spacing: DSSpacing.xs) {
-        HStack(spacing: DSSpacing.xs) {
+    DSCard(style: .plain, padding: DSSpacing.md, radius: DSRadius.md) {
+      VStack(alignment: .leading, spacing: DSSpacing.sm) {
+        HStack(alignment: .top, spacing: DSSpacing.sm) {
           if let icon = self.icon {
-            ZStack {
-              RoundedRectangle(cornerRadius: DSRadius.sm, style: .continuous)
-                .fill(self.tint.opacity(DSOpacity.soft))
-              DSIconView(icon, weight: .regular, size: 16, tint: self.tint)
-            }
-            .frame(width: 32, height: 32)
+            DSIconBadge(
+              icon,
+              size: .small,
+              tint: self.tint,
+              surface: self.tint.opacity(0.11),
+              border: self.tint.opacity(0.16)
+            )
           }
-          DSText(self.title, style: .footnote, color: DSColor.Text.secondary)
           Spacer(minLength: 0)
-        }
-        DSText(self.value, style: .titleLarge)
-          .contentTransition(.numericText())
-        HStack(spacing: DSSpacing.xs) {
           if let trend = self.trend {
             self.trendBadge(trend)
           }
-          if let subtitle = self.subtitle {
-            DSText(subtitle, style: .caption, color: DSColor.Text.tertiary)
-          }
+        }
+        DSText(self.title, style: .footnote, color: DSColor.Text.secondary)
+        DSText(self.value, style: .titleLarge)
+          .contentTransition(.numericText())
+        if let subtitle = self.subtitle {
+          DSText(subtitle, style: .caption, color: DSColor.Text.tertiary)
         }
       }
     }
@@ -70,15 +69,19 @@ public struct DSStatCard: View {
 
   @ViewBuilder
   private func trendBadge(_ trend: DSStatTrend) -> some View {
-    HStack(spacing: 2) {
+    HStack(spacing: 4) {
       DSIconView(self.trendIcon(for: trend), weight: .fill, size: 10, tint: self.trendColor(for: trend))
-      DSText(trend.label, style: .caption, color: self.trendColor(for: trend))
+      DSText(trend.label, style: .captionStrong, color: self.trendColor(for: trend))
     }
     .padding(.horizontal, 6)
-    .padding(.vertical, 2)
+    .padding(.vertical, 3)
     .background(
       Capsule()
-        .fill(self.trendColor(for: trend).opacity(DSOpacity.soft))
+        .fill(self.trendColor(for: trend).opacity(0.1))
+    )
+    .overlay(
+      Capsule()
+        .strokeBorder(self.trendColor(for: trend).opacity(0.16), lineWidth: 1)
     )
   }
 

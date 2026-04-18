@@ -20,7 +20,7 @@ public struct DSCard<Content: View>: View {
   public init(
     style: DSCardStyle = .elevated,
     padding: CGFloat = DSSpacing.lg,
-    radius: CGFloat = DSRadius.card,
+    radius: CGFloat = DSRadius.lg,
     action: (() -> Void)? = nil,
     accessibilityLabel: String? = nil,
     accessibilityHint: String? = nil,
@@ -78,34 +78,34 @@ public struct DSCard<Content: View>: View {
       case .bordered:
         return DSColor.Background.surface
       case .accent:
-        return DSColor.Accent.primarySoft
+        return DSColor.Accent.primarySoft.opacity(0.55)
     }
   }
 
   private var borderColor: Color {
     switch self.style {
-      case .bordered:
+      case .plain:
         return DSColor.Border.subtle
+      case .elevated:
+        return DSColor.Border.subtle.opacity(0.82)
+      case .bordered:
+        return DSColor.Border.default
       case .accent:
-        return DSColor.Accent.primary.opacity(0.35)
-      default:
-        return .clear
+        return DSColor.Accent.primary.opacity(0.18)
     }
   }
 
   private var borderWidth: CGFloat {
     switch self.style {
-      case .bordered, .accent:
+      case .plain, .elevated, .bordered, .accent:
         return 1
-      default:
-        return 0
     }
   }
 
   private var shadow: DSShadow {
     switch self.style {
       case .elevated:
-        return DSElevation.sm
+        return DSElevation.xs
       case .plain, .bordered, .accent:
         return DSElevation.none
     }

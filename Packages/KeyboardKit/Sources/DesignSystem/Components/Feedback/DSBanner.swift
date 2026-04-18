@@ -29,12 +29,14 @@ public struct DSBanner: View {
 
   public var body: some View {
     HStack(alignment: .top, spacing: DSSpacing.md) {
-      ZStack {
-        Circle()
-          .fill(self.tint.opacity(DSOpacity.soft))
-          .frame(width: 40, height: 40)
-        DSIconView(self.icon ?? self.defaultIcon, weight: .fill, size: 20, tint: self.tint)
-      }
+      DSIconBadge(
+        self.icon ?? self.defaultIcon,
+        weight: .fill,
+        size: .medium,
+        tint: self.tint,
+        surface: self.surface,
+        border: self.tint.opacity(0.16)
+      )
       VStack(alignment: .leading, spacing: 4) {
         HStack(alignment: .top) {
           DSText(self.title, style: .bodyStrong)
@@ -73,12 +75,19 @@ public struct DSBanner: View {
     .frame(maxWidth: .infinity, alignment: .leading)
     .background(
       RoundedRectangle(cornerRadius: DSRadius.md, style: .continuous)
-        .fill(self.surface)
+        .fill(DSColor.Background.surface)
     )
     .overlay(
       RoundedRectangle(cornerRadius: DSRadius.md, style: .continuous)
-        .strokeBorder(self.tint.opacity(0.25), lineWidth: 1)
+        .strokeBorder(DSColor.Border.subtle, lineWidth: 1)
     )
+		.overlay(alignment: .leading) {
+			RoundedRectangle(cornerRadius: DSRadius.xs, style: .continuous)
+				.fill(self.tint)
+				.frame(width: 3)
+				.padding(.vertical, 1)
+				.padding(.leading, 1)
+		}
     .accessibilityElement(children: .combine)
   }
 

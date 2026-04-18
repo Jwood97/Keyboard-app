@@ -90,20 +90,13 @@ public struct DSListRow<Trailing: View>: View {
   private var content: some View {
     HStack(spacing: DSSpacing.sm) {
       if let icon = self.icon {
-        DSIconView(
+        DSIconBadge(
           icon,
           weight: self.iconWeight,
-          size: 20,
-          tint: self.destructive ? DSColor.Status.danger : self.iconTint
-        )
-        .frame(width: 36, height: 36)
-        .background(
-          RoundedRectangle(cornerRadius: DSRadius.sm, style: .continuous)
-            .fill(
-              self.destructive
-                ? DSColor.Status.dangerSurface
-                : self.iconTint.opacity(0.14)
-            )
+          size: .medium,
+          tint: self.resolvedIconTint,
+          surface: self.resolvedIconTint.opacity(0.11),
+          border: self.resolvedIconTint.opacity(0.15)
         )
       }
       VStack(alignment: .leading, spacing: 2) {
@@ -123,7 +116,7 @@ public struct DSListRow<Trailing: View>: View {
         self.accessoryView
       }
     }
-    .padding(.vertical, DSSpacing.sm)
+    .padding(.vertical, 14)
     .padding(.horizontal, DSSpacing.md)
     .contentShape(Rectangle())
   }
@@ -136,10 +129,14 @@ public struct DSListRow<Trailing: View>: View {
       case .chevron:
         DSIconView(DSIcon.UI.chevronRight, weight: .regular, size: 14, tint: DSColor.Text.tertiary)
       case let .info(text):
-        DSText(text, style: .footnote, color: DSColor.Text.secondary)
+        DSText(text, style: .captionStrong, color: DSColor.Text.secondary)
       case let .badge(text):
         DSChip(text, style: .accent, size: .small)
     }
+  }
+
+  private var resolvedIconTint: Color {
+    self.destructive ? DSColor.Status.danger : self.iconTint
   }
 }
 
